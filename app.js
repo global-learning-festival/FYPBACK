@@ -2,9 +2,9 @@ const express = require('express');
 const cors = require('cors');
 //const multer = require("multer");
 const path = require("path");
+const product=require('./model/product');
 
-
-
+const pool = require('./database')
 
 //////////////////////////////////////////////////////
 // INIT
@@ -36,28 +36,43 @@ app.use(express.urlencoded({ extended: false}));
 app.use(express.json())
 app.use(bodyParser.json()); 
 
-app.get('/route', async (req, res) => {
-    try {
-      const start = req.query.start; // Start location (e.g., '1.319728,103.8421')
-      const end = req.query.end; // End location (e.g., '1.319728905,103.8421581')
-      const routeType = req.query.routeType || 'walk'; // Specify routeType if needed
+
+
+  app.post('/product',  (req, res)=>{
+    
   
-      // Make a request to the OneMap API
-      const response = await axios.get(
-        `https://www.onemap.gov.sg/api/public/routingsvc/route?start=${start}&end=${end}&routeType=${routeType}`,
-        {
-          headers: {
-            Authorization: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI4YmYzMDFhZWQ2NzY3NjJkZWQxZTgzYTQ0MWU5ODA1OCIsImlzcyI6Imh0dHA6Ly9pbnRlcm5hbC1hbGItb20tcHJkZXppdC1pdC0xMjIzNjk4OTkyLmFwLXNvdXRoZWFzdC0xLmVsYi5hbWF6b25hd3MuY29tL2FwaS92Mi91c2VyL3Bhc3N3b3JkIiwiaWF0IjoxNjk4MTE1MDMxLCJleHAiOjE2OTgzNzQyMzEsIm5iZiI6MTY5ODExNTAzMSwianRpIjoiMFRiTURPc2h0b1ZoOHZDOCIsInVzZXJfaWQiOjEzNjMsImZvcmV2ZXIiOmZhbHNlfQ.VU24uLUE0XPAsr-ZGfuDLeheqWfqqz3eDVVyaRRvE8o', // Replace with your OneMap API key
-          },
+    var name = req.params.name
+    var description = req.params.description
+    var brand = req.params.brand
+    var price = req.params.price
+
+    // call the model method add module
+    product.addproduct(name, description, brand, price, (err, result)=>{
+        if(err){
+            console.log(err)
+            // respond the error
+            res.status(500).send()
+        }else{
+           
+          
+            res.status(201).send(result)
         }
-      );
-  
-      // Return the response from the OneMap API to the client
-      res.json(response.data);
-    } catch (error) {
-      // Handle errors
-      console.error('Error:', error);
-      res.status(500).json({ error: 'Internal Server Error' });
-    }
-  });
+    })
+     
+})
+
+//get product
+app.get('/products', (req, res)=>{
+  product.getproduct((err, result)=>{
+      if(err){
+          console.log(err)
+          // respond with status 500 
+          res.status(500).send()
+      }else {
+          console.log(result)
+          //respond with status 200 and send result back
+          res.status(200).send(result.rows)    
+      }
+  })
+})
   
