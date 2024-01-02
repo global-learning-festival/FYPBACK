@@ -1,23 +1,33 @@
+require('dotenv').config();
 const pg = require('pg');
 
-const pool = new pg.Pool({
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    host: process.env.DB_HOST,
-    database: process.env.DB_DATABASE,
-    max: process.env.DB_CONNECTION_LIMIT,
-    ssl: {
-        rejectUnauthorized: false,
-    },
-});
-
-// Monkey patch .query(...) method to console log all queries before executing it
-// For debugging purpose
-const oldQuery = pool.query;
-pool.query = function (...args) {
-    const [sql, params] = args;
-    console.log(`EXECUTING QUERY |`, sql, params);
-    return oldQuery.apply(pool, args);
+const dbConfig = {
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  host: process.env.DB_HOST,
+  database: process.env.DB_DATABASE,
+  connectionLimit: process.env.DB_CONNECTION_LIMIT || 5,
+  ssl : {
+    rejectUnauthorized: false,
+  }
 };
 
-module.exports = pool;
+let db;
+
+if (process.env.NODE_ENV === 'test') {
+  db = new pg.Client(dbConfig);
+  db.connect();
+} else {
+  db = new pg.Pool(dbConfig);
+}
+
+module.exports = {
+  query: (sql, params) => {
+    console.log('SENDING QUERY | ', sql, params);
+    return db.query(sql, params);
+  },
+  end: () => db.end(),
+  POSTGRES_ERROR_CODE: {
+    UNIQUE_CONSTRAINT: '23505',
+  },
+};

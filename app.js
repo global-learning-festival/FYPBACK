@@ -1,6 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-
+const product=require('./model/product');
 
 const app = express();
 
