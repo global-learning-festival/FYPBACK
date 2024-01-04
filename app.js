@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const product=require('./model/product');
 const announcement=require('./model/announcement');
+const importantInformation = require('./model/importantInfo');
 const cors = require('cors');
 const app = express();
 
@@ -82,6 +83,44 @@ app.get('/announcement', (req, res)=>{
             res.status(200).send(result.rows)    
         }
     })
+})
+
+//Create Important Information
+app.post('/importantInformation', (req, res)=>{
+  
+    var title = req.body.title
+    var subtitle = req.body.subtitle
+    var description = req.body.description
+
+    importantInformation.addImportantInfomation(title, subtitle, description, (err, result) => {
+
+        if (err){
+            console.log(err)
+            res.status(500).send()
+        } 
+        
+        else {
+            res.status(201).send(result)
+        }
+    })
+
+})
+
+app.get('/importantInformation', (req, res) => {
+
+    importantInformation.getImportantInfomation((err, result) => {
+
+        if (err){
+            console.log(err)
+            res.status(500).send()
+        }
+        
+        else {
+            console.log(result)
+            res.status(200).send(result.rows)    
+        }
+    })
+
 })
 
 
