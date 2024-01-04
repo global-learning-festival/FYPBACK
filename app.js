@@ -1,14 +1,15 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const product=require('./model/product');
-
+const announcement=require('./model/announcement');
+const cors = require('cors');
 const app = express();
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-
-
+app.use(cors());
+//Test
 app.post('/product',  (req, res)=>{
     
   
@@ -46,8 +47,42 @@ app.get('/products', (req, res)=>{
     })
 })
 
+//Create Announcements
+app.post('/announcements',  (req, res)=>{
+    
+  
+    var title = req.body.title
+    var description = req.body.description
+ 
 
+    // call the model method add module
+    announcement.addannouncement(title, description,(err, result)=>{
+        if(err){
+            console.log(err)
+            // respond the error
+            res.status(500).send()
+        }else{
+           
+          
+            res.status(201).send(result)
+        }
+    })
+     
+})
 
+app.get('/announcement', (req, res)=>{
+    announcement.getannonucement((err, result)=>{
+        if(err){
+            console.log(err)
+            // respond with status 500 
+            res.status(500).send()
+        }else {
+            console.log(result)
+            //respond with status 200 and send result back
+            res.status(200).send(result.rows)    
+        }
+    })
+})
 
 
 
