@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const product=require('./model/product');
 const announcement=require('./model/announcement');
+const importantInformation=require('./model/importantInfo')
 const cors = require('cors');
 const app = express();
 
@@ -86,7 +87,7 @@ app.get('/announcements', (req, res)=>{
 })
 
 
-app.put('/announcement/',  (req, res)=>{
+app.put('/announcement/:id/',  (req, res)=>{
     
     var productid = parseInt(req.params.id);
     var title = req.body.title
