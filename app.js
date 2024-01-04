@@ -2,7 +2,6 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const product=require('./model/product');
 const announcement=require('./model/announcement');
-const importantInformation = require('./model/importantInfo');
 const cors = require('cors');
 const app = express();
 
@@ -49,7 +48,7 @@ app.get('/products', (req, res)=>{
 })
 
 //Create Announcements
-app.post('/announcements',  (req, res)=>{
+app.post('/announcement',  (req, res)=>{
     
   
     var title = req.body.title
@@ -71,7 +70,8 @@ app.post('/announcements',  (req, res)=>{
      
 })
 
-app.get('/announcement', (req, res)=>{
+//Retrieve announcements
+app.get('/announcements', (req, res)=>{
     announcement.getannonucement((err, result)=>{
         if(err){
             console.log(err)
@@ -85,45 +85,28 @@ app.get('/announcement', (req, res)=>{
     })
 })
 
-//Create Important Information
-app.post('/importantInformation', (req, res)=>{
-  
+
+app.put('/announcement/',  (req, res)=>{
+    
+    var productid = parseInt(req.params.id);
     var title = req.body.title
-    var subtitle = req.body.subtitle
     var description = req.body.description
+ 
 
-    importantInformation.addImportantInfomation(title, subtitle, description, (err, result) => {
-
-        if (err){
+    // call the model method add module
+    announcement.updateAnnouncement(productid, title, description,(err, result)=>{
+        if(err){
             console.log(err)
+            // respond the error
             res.status(500).send()
-        } 
-        
-        else {
+        }else{
+           
+          
             res.status(201).send(result)
         }
     })
-
+     
 })
-
-app.get('/importantInformation', (req, res) => {
-
-    importantInformation.getImportantInfomation((err, result) => {
-
-        if (err){
-            console.log(err)
-            res.status(500).send()
-        }
-        
-        else {
-            console.log(result)
-            res.status(200).send(result.rows)    
-        }
-    })
-
-})
-
-
 
 
 
