@@ -22,7 +22,7 @@ const announcement = {
     },
 
     getannonucement: function( callback) {
-        return query(`SELECT title , description FROM announcements`).then((result,err) =>{
+        return query(`SELECT title, description, TO_CHAR(created_at, 'YY/MM/DD, HH12:MIam') AS "created_on", TO_CHAR(updated_at, 'YY/MM/DD, HH12:MIam') AS "updated_on" FROM announcements`).then((result,err) =>{
     
             if (err) {
                 callback(err, null);
@@ -34,6 +34,19 @@ const announcement = {
             
         });
     },
+
+    updateAnnouncement: function(announcementid, title, description, callback) {
+        return query(`UPDATE announcements SET title = $1, description = $2 WHERE announcementid = $3 RETURNING *`, [title, description, announcementid])
+            .then((result, err) => {
+                if (err) {
+                    callback(err, null);
+                    console.log(err);
+                } else {
+                    callback(null, result);
+                }
+            });
+    },
+    
    
 
 
