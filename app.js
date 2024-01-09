@@ -2,8 +2,10 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const product=require('./model/product');
 const announcement=require('./model/announcement');
-const importantInformation=require('./model/importantInfo')
 const map=require('./model/map')
+const events=require('./model/events');
+const importantInformation=require('./model/importantInfo');
+
 const cors = require('cors');
 const app = express();
 const path = require('path');
@@ -114,6 +116,47 @@ app.put('/announcement/:id/',  (req, res)=>{
         }
     })
      
+})
+
+app.post('/events', (req, res)=>{
+
+    var title = req.body.title;
+    var image_banner = req.body.image_banner;
+    var location = req.body.location;
+    var keynote_speaker = req.body.keynote_speaker;
+    var description = req.body.description;
+    var survey_link = req.body.survey_link;
+
+
+    events.addEvent(title, image_banner, location, keynote_speaker, description, survey_link, (err, result) => {
+
+        if (err){
+            console.log(err)
+            res.status(500).send()
+        } 
+
+        else {
+            res.status(201).send(result)
+        }
+    })
+
+})
+
+app.get('/events', (req, res) => {
+
+    events.getEvents((err, result) => {
+
+        if (err){
+            console.log(err)
+            res.status(500).send()
+        }
+
+        else {
+            console.log(result)
+            res.status(200).send(result.rows)    
+        }
+    })
+
 })
 
 app.post('/importantInformation', (req, res)=>{
