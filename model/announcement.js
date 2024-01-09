@@ -22,7 +22,7 @@ const announcement = {
     },
 
     getannonucement: function( callback) {
-        return query(`SELECT title, description, TO_CHAR(created_at, 'YY/MM/DD, HH12:MIam') AS "created_on", TO_CHAR(updated_at, 'YY/MM/DD, HH12:MIam') AS "updated_on" FROM announcements ORDER BY updated_at DESC;`).then((result,err) =>{
+        return query(`SELECT title, description, TO_CHAR(created_at, 'DD/MM/YYYY ,HH12:MIam') AS "created_on", TO_CHAR(updated_at, 'DD/MM/YYYY ,HH12:MIam') AS "updated_on" FROM announcements ORDER BY updated_at DESC;`).then((result,err) =>{
     
             if (err) {
                 callback(err, null);
