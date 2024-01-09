@@ -8,16 +8,18 @@ const Authorization = () => {
 
 const Redirect = async (code) => {
   try {
-    const tokenUrl = 'https://www.linkedin.com/oauth/v2/accessToken';
+    const tokenUrl = `https://www.linkedin.com/oauth/v2/accessToken?${qs.stringify(payload)}`;
     const payload = {
-      grant_type: 'authorization_code',
-      code: code,
-      redirect_uri: process.env.REDIRECT_URL,
       client_id: process.env.CLIENT_ID,
       client_secret: process.env.CLIENT_SECRET,
+      redirect_uri: process.env.REDIRECT_URL,
+      grant_type: 'authorization_code',
+      code: code,
     };
 
-    const response = await axios.post(tokenUrl, payload);
+    const response = await axios.post(tokenUrl, payload, headers({
+      'Content-Type':'x-www-form-urlencoded'
+    }));
     
     // Process the response as needed (e.g., save the access token)
 
@@ -29,6 +31,6 @@ const Redirect = async (code) => {
 };
 
 module.exports = {
-  Authorization,
+  Authorization,  
   Redirect,
 };
