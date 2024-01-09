@@ -2,7 +2,7 @@ require('dotenv').config();
 const res = require('express/lib/response');
 const { query } = require("../database")
 
-const sizeOf = require('image-size');
+
 const map = {
    
 
@@ -37,7 +37,9 @@ const map = {
             
         });
     },
-   
+
+    
+
     updatemarker: function(announcementid, title, description, callback) {
         return query(`UPDATE announcements SET title = $1, description = $2 WHERE announcementid = $3 RETURNING *`, [title, description, announcementid])
             .then((result, err) => {
