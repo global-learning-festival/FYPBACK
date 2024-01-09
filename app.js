@@ -2,13 +2,21 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const product=require('./model/product');
 const announcement=require('./model/announcement');
+const map=require('./model/map')
 const events=require('./model/events');
 const importantInformation=require('./model/importantInfo');
+
 const cors = require('cors');
 const app = express();
-
+const path = require('path');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+
+const multer = require('multer');
+
+// Set up multer storage
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 
 app.use(cors());
 //Test
@@ -188,8 +196,43 @@ app.get('/importantInformation', (req, res) => {
 
 })
 
+app.post('/marker', (req, res)=>{
+
+    var location_name = req.body.location_name
+    var category = req.body.category
+    var description = req.body.description
+    var coordinates = req.body.coordinates  
+
+    map.addmarker(location_name, category, description, coordinates, (err, result) => {
+
+        if (err){
+            console.log(err)
+            res.status(500).send()
+        } 
+
+        else {
+            res.status(201).send(result)
+        }
+    })
 
 
+})
+app.get('/markers', (req, res) => {
+
+    map.getmarker((err, result) => {
+
+        if (err){
+            console.log(err)
+            res.status(500).send()
+        }
+
+        else {
+            console.log(result)
+            res.status(200).send(result.rows)    
+        }
+    })
+
+})
 
 
 
