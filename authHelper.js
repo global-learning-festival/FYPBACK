@@ -4,7 +4,7 @@ require('dotenv').config();
 const Authorization = () => {
   const authUrl = `https://www.linkedin.com/oauth/v2/authorization?client_id=${process.env.CLIENT_ID}&response_type=code&scope=${process.env.SCOPE}&redirect_uri=${process.env.REDIRECT_URL}`;
   return encodeURI(authUrl);
-};
+};  
 
 const Redirect = async (code) => {
   try {
@@ -12,7 +12,7 @@ const Redirect = async (code) => {
     const payload = {
       client_id: process.env.CLIENT_ID,
       client_secret: process.env.CLIENT_SECRET,
-      redirect_uri: process.env.REDIRECT_URL,
+      redirect_uri: process.env.REDIRECT_URI,
       grant_type: 'authorization_code',
       code: code,
     };
@@ -34,3 +34,4 @@ module.exports = {
   Authorization,  
   Redirect,
 };
+  
