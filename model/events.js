@@ -33,6 +33,18 @@ const events = {
             
         });
     },
+    getEventbyId: function (eventid, callback) {
+        return query('SELECT * FROM events WHERE eventid = $1', [eventid])
+            .then((result, err) => {
+                if (err) {
+                    callback(err, null);
+                    console.log(err);
+                    return;
+                } else {
+                    callback(null, result);
+                }
+            });
+    },
 }
            
 module.exports = events;
