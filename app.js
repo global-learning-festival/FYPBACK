@@ -96,8 +96,24 @@ app.get('/announcements', (req, res) => {
     })
 })
 
+app.get('/announcements/:id', (req, res)=>{
+    var productid = parseInt(req.params.id);
 
-app.put('/announcement/:id/', (req, res) => {
+    announcement.getannonucementbyid(productid, (err, result)=>{
+        if(err){
+            console.log(err)
+            // respond with status 500 
+            res.status(500).send()
+        }else {
+            console.log(result)
+            //respond with status 200 and send result back
+            res.status(200).send(result.rows)    
+        }
+    })
+})
+
+
+app.put('/announcements/:id/', (req, res) => {
 
     var productid = parseInt(req.params.id);
     var title = req.body.title
@@ -119,6 +135,21 @@ app.put('/announcement/:id/', (req, res) => {
 
 })
 
+app.delete('/announcements/:id', (req, res)=>{
+    var productid = parseInt(req.params.id);
+
+    announcement.deleteannonucement(productid, (err, result)=>{
+        if(err){
+            console.log(err)
+            // respond with status 500 
+            res.status(500).send()
+        }else {
+            console.log(result)
+            //respond with status 200 and send result back
+            res.status(200).send(result.rows)    
+        }
+    })
+})
 app.post('/events', (req, res) => {
 
     var title = req.body.title;

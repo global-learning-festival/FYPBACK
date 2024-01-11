@@ -22,7 +22,7 @@ const announcement = {
     },
 
     getannonucement: function( callback) {
-        return query(`SELECT title, description, TO_CHAR(created_at, 'DD/MM/YYYY ,HH12:MIam') AS "created_on", TO_CHAR(updated_at, 'DD/MM/YYYY ,HH12:MIam') AS "updated_on" FROM announcements ORDER BY updated_at DESC;`).then((result,err) =>{
+        return query(`SELECT announcementid, title, description, TO_CHAR(created_at, 'DD/MM/YYYY ,HH12:MIam') AS "created_on", TO_CHAR(updated_at, 'DD/MM/YYYY ,HH12:MIam') AS "updated_on" FROM announcements ORDER BY updated_at DESC;`).then((result,err) =>{
     
             if (err) {
                 callback(err, null);
@@ -34,7 +34,19 @@ const announcement = {
             
         });
     },
-
+    getannonucementbyid: function(announcementid, callback) {
+        return query(`SELECT announcementid, title, description, TO_CHAR(created_at, 'DD/MM/YYYY ,HH12:MIam') AS "created_on", TO_CHAR(updated_at, 'DD/MM/YYYY ,HH12:MIam') AS "updated_on" FROM announcements WHERE announcementid = $1;`, [announcementid]).then((result,err) =>{
+    
+            if (err) {
+                callback(err, null);
+                return;
+            }
+            else  {
+                return callback(null, result);
+            } 
+            
+        });
+    },
     updateAnnouncement: function(announcementid, title, description, callback) {
         return query(`UPDATE announcements SET title = $1, description = $2 WHERE announcementid = $3 RETURNING *`, [title, description, announcementid])
             .then((result, err) => {
@@ -46,7 +58,19 @@ const announcement = {
                 }
             });
     },
+    deleteannonucement: function(announcementid, callback) {
+        return query(`DELETE FROM announcements WHERE announcementid = $1;`, [announcementid]).then((result,err) =>{
     
+            if (err) {
+                callback(err, null);
+                return;
+            }
+            else  {
+                return callback(null, result);
+            } 
+            
+        });
+    },
    
 
 
