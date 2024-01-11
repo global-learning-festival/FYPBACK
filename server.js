@@ -1,12 +1,12 @@
 
 const cluster = require('cluster');
 const express = require('express');
-const app = require('./app');
+var bodyParser = require('body-parser')
 const { Authorization, Redirect } = require("./authHelper");
 require('dotenv').config('.env');
 
-const port = process.env.PORT || 5000;
-const cCPUs = 1;
+var port = process.env.PORT || 5000;
+var cCPUs = 1;
 
 process.env.NODE_NO_WARNINGS = 1;
 
@@ -24,14 +24,21 @@ if (cluster.isMaster) {
         console.log('Worker ' + worker.process.pid + ' died.');
     });
 } else {
-    app.listen(port, () => {
-        console.log(`Server is running on port ${port}`);
-    });
+    var app = express();
+    
+    app.use(bodyParser.urlencoded({
+        extended: true
+    }));
+
+    app.use(bodyParser.json());
+
+    app.listen(port);
+
     app.get('/api/linkedin/authorize', (req, res) => {
       return res.redirect(Authorization());
-  });
-  
-  app.get('/api/linkedin/redirect', async (req, res) => {
+    });
+    
+    app.get('/api/linkedin/redirect', async (req, res) => {
       return res.json(Redirect(req.query.code));
-  });
+    });
 }
