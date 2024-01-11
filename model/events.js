@@ -21,7 +21,7 @@ const events = {
     },
 
     getEvents: function (callback) {
-        return query(`SELECT title, image_banner, TO_CHAR(time_start, 'DD/MM/YYYY ,HH12:MIam') AS "time_start", TO_CHAR(time_end, 'DD/MM/YYYY ,HH12:MIam') AS "time_end", location, keynote_speaker, description, survey_link FROM events`).then((result,err) =>{
+        return query(`SELECT eventid, title, image_banner, TO_CHAR(time_start, 'DD/MM/YYYY, HH12:MIam') AS "time_start", TO_CHAR(time_end, 'DD/MM/YYYY, HH12:MIam') AS "time_end", location, keynote_speaker, description, survey_link FROM events`).then((result,err) =>{
     
             if (err) {
                 callback(err, null);
@@ -41,6 +41,7 @@ const events = {
                     console.log(err);
                     return;
                 } else {
+                    console.log(result);
                     callback(null, result);
                 }
             });
