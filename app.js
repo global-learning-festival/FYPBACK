@@ -13,6 +13,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 const multer = require('multer');
+const User = require('./model/user');
 
 // Set up multer storage
 const storage = multer.memoryStorage();
@@ -159,6 +160,21 @@ app.get('/events', (req, res) => {
 
 })
 
+app.get('/events/:id', (req, res) => {
+    var eventid = parseInt(req.params.id);
+    
+
+    events.getEventbyId(eventid, (err, result) => {
+        if (err) {
+            console.log(err);
+            res.status(500).send();
+        } else {
+            console.log(result);
+            res.status(200).send(result.rows);
+        }
+    });
+});
+
 app.post('/importantInformation', (req, res) => {
 
     var title = req.body.title
@@ -284,7 +300,45 @@ app.get('/markers', (req, res) => {
 })
 
 
+app.post('/adduser', (req, res) => {
 
+    var username = req.body.username
+    var password = req.body.password
+    var type = req.body.type
+
+    User.addUser(username, password, type, (err, result) => {
+
+        if (err) {
+            console.log(err)
+            res.status(500).send()
+        }
+
+        else {
+            res.status(201).send(result)
+        }
+    })
+
+})
+
+app.post('/login', (req, res) => {
+
+    var username = req.body.username
+    var password = req.body.password
+    
+
+    User.addUser(username, password, (err, result) => {
+
+        if (err) {
+            console.log(err)
+            res.status(500).send()
+        }
+
+        else {
+            res.status(201).send(result)
+        }
+    })
+
+})
 
 
 
