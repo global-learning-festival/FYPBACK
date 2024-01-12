@@ -13,6 +13,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 const multer = require('multer');
+const User = require('./model/user');
 
 // Set up multer storage
 const storage = multer.memoryStorage();
@@ -95,6 +96,7 @@ app.get('/announcements', (req, res) => {
     })
 })
 
+
 app.get('/announcement/:id', (req, res) => {
     var announcementid = parseInt(req.params.id);
     
@@ -112,7 +114,8 @@ app.get('/announcement/:id', (req, res) => {
 });
 
 
-app.put('/announcement/:id/', (req, res) => {
+
+app.put('/announcements/:id/', (req, res) => {
 
     var productid = parseInt(req.params.id);
     var title = req.body.title
@@ -134,6 +137,21 @@ app.put('/announcement/:id/', (req, res) => {
 
 })
 
+app.delete('/announcements/:id', (req, res)=>{
+    var productid = parseInt(req.params.id);
+
+    announcement.deleteannonucement(productid, (err, result)=>{
+        if(err){
+            console.log(err)
+            // respond with status 500 
+            res.status(500).send()
+        }else {
+            console.log(result)
+            //respond with status 200 and send result back
+            res.status(200).send(result.rows)    
+        }
+    })
+})
 app.post('/events', (req, res) => {
 
     var title = req.body.title;
@@ -175,6 +193,58 @@ app.get('/events', (req, res) => {
 
 })
 
+app.get('/events/:id', (req, res) => {
+    var eventid = parseInt(req.params.id);
+    
+
+    events.getEventbyId(eventid, (err, result) => {
+        if (err) {
+            console.log(err);
+            res.status(500).send();
+        } else {
+            console.log(result);
+            res.status(200).send(result.rows);
+        }
+    });
+});
+
+app.put('/events/:id', (req, res) => {
+    var eventid = parseInt(req.params.id);
+    var title = req.body.title
+    var image_banner = req.body.image_banner
+    var time_start = req.body.time_start
+    var time_end = req.body.time_end
+    var location = req.body.location
+    var keynote_speaker = req.body.keynote_speaker
+    var description = req.body.description
+    var survey_link = req.body.survey_link
+  
+    events.updateEvent(eventid, title, image_banner, time_start,time_end, location, keynote_speaker, description, survey_link ,(err, result) => {
+      if (err) {
+        console.error(err);
+        res.status(500).send();
+      } else {
+        res.status(200).send(result);
+      }
+    });
+});
+
+app.delete('/deleteevent/:id', (req, res) => {
+    var eventid = parseInt(req.params.id);
+
+    events.deleteEvent(eventid, (err, result) => {
+
+        if (err) {
+            console.log(err)
+            res.status(500).send()
+        }
+
+        else {
+            res.status(201).send(result)
+        }
+    })
+
+})
 app.post('/importantInformation', (req, res) => {
 
     var title = req.body.title
@@ -299,9 +369,14 @@ app.get('/markers', (req, res) => {
 
 })
 
-app.get('/markerindiv/:id/', (req, res) => {
-    var mapid = parseInt(req.params.id);
-    map.getmarkerindiv(mapid,(err, result) => {
+
+app.post('/adduser', (req, res) => {
+
+    var username = req.body.username
+    var password = req.body.password
+    var type = req.body.type
+
+    User.addUser(username, password, type, (err, result) => {
 
         if (err) {
             console.log(err)
@@ -309,36 +384,19 @@ app.get('/markerindiv/:id/', (req, res) => {
         }
 
         else {
-            console.log(result)
-            res.status(200).send(result.rows)
+            res.status(201).send(result)
         }
     })
 
 })
 
-app.put('/marker/:id', (req, res) => {
-    var mapid = parseInt(req.params.id);
-    var location_name = req.body.location_name
-    var category = req.body.category
-    var description = req.body.description
+app.post('/login', (req, res) => {
 
+    var username = req.body.username
+    var password = req.body.password
+    
 
-  
-    map.updatemarker(mapid, location_name, category, description, (err, result) => {
-      if (err) {
-        console.error(err);
-        res.status(500).send();
-      } else {
-        res.status(200).send(result);
-      }
-    });
-});
-
-
-app.delete('/delmarker/:id', (req, res) => {
-    var mapid = parseInt(req.params.id);
-
-    map.deletemarker(mapid, (err, result) => {
+    User.addUser(username, password, (err, result) => {
 
         if (err) {
             console.log(err)
@@ -361,7 +419,5 @@ app.delete('/delmarker/:id', (req, res) => {
 
 
 
-
-
-
 module.exports = app;
+
