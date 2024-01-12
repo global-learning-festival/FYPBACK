@@ -21,8 +21,8 @@ const announcement = {
         });
     },
 
-    getannonucement: function( callback) {
-        return query(`SELECT title, description, TO_CHAR(created_at, 'DD/MM/YYYY ,HH12:MIam') AS "created_on", TO_CHAR(updated_at, 'DD/MM/YYYY ,HH12:MIam') AS "updated_on" FROM announcements ORDER BY updated_at DESC;`).then((result,err) =>{
+    getannonucements: function(callback) {
+        return query(`SELECT announcementid, title, description, TO_CHAR(created_at, 'DD/MM/YYYY ,HH12:MIam') AS "created_on", TO_CHAR(updated_at, 'DD/MM/YYYY ,HH12:MIam') AS "updated_on" FROM announcements ORDER BY updated_at DESC;`).then((result,err) =>{
     
             if (err) {
                 callback(err, null);
@@ -33,6 +33,19 @@ const announcement = {
             } 
             
         });
+    },
+
+    getAnnouncementById: function (announcementid, callback) {
+        return query('SELECT * FROM announcements WHERE infoid = $1', [announcementid])
+            .then((result, err) => {
+                if (err) {
+                    callback(err, null);
+                    console.log(err);
+                    return;
+                } else {
+                    callback(null, result);
+                }
+            });
     },
 
     updateAnnouncement: function(announcementid, title, description, callback) {

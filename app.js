@@ -82,7 +82,7 @@ app.post('/announcement', (req, res) => {
 
 //Retrieve announcements
 app.get('/announcements', (req, res) => {
-    announcement.getannonucement((err, result) => {
+    announcement.getannonucements((err, result) => {
         if (err) {
             console.log(err)
             // respond with status 500 
@@ -94,6 +94,22 @@ app.get('/announcements', (req, res) => {
         }
     })
 })
+
+app.get('/announcement/:id', (req, res) => {
+    var announcementid = parseInt(req.params.id);
+    
+
+    announcement.getAnnouncementById(announcementid, (err, result) => {
+        if (err) {
+            console.log(result)
+            console.log(err);
+            res.status(500).send();
+        } else {
+            console.log(result);
+            res.status(200).send(result.rows);
+        }
+    });
+});
 
 
 app.put('/announcement/:id/', (req, res) => {
