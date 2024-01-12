@@ -283,6 +283,59 @@ app.get('/markers', (req, res) => {
 
 })
 
+app.get('/markerindiv/:id/', (req, res) => {
+    var mapid = parseInt(req.params.id);
+    map.getmarkerindiv(mapid,(err, result) => {
+
+        if (err) {
+            console.log(err)
+            res.status(500).send()
+        }
+
+        else {
+            console.log(result)
+            res.status(200).send(result.rows)
+        }
+    })
+
+})
+
+app.put('/marker/:id', (req, res) => {
+    var mapid = parseInt(req.params.id);
+    var location_name = req.body.location_name
+    var category = req.body.category
+    var description = req.body.description
+
+
+  
+    map.updatemarker(mapid, location_name, category, description, (err, result) => {
+      if (err) {
+        console.error(err);
+        res.status(500).send();
+      } else {
+        res.status(200).send(result);
+      }
+    });
+});
+
+
+app.delete('/delmarker/:id', (req, res) => {
+    var mapid = parseInt(req.params.id);
+
+    map.deletemarker(mapid, (err, result) => {
+
+        if (err) {
+            console.log(err)
+            res.status(500).send()
+        }
+
+        else {
+            res.status(201).send(result)
+        }
+    })
+
+})
+
 
 
 
