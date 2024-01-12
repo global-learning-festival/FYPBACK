@@ -12,11 +12,6 @@ const path = require('path');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-
-const jwt = require("jsonwebtoken");
-const JWT_SECRET = require("./config"); 
-const { username, password } = require('pg/lib/defaults');
-
 const multer = require('multer');
 const User = require('./model/user');
 
@@ -48,41 +43,6 @@ app.post('/product', (req, res) => {
     })
 
 })
-
-//User Login
-app.post("/login", (req, res) => {
-    
-    login.verify(
-        req.body.username,
-        req.body.password,
-        (error, user) => {
-            if (error) {
-                res.status(500).send();
-                return;
-            }
-            if (user === null) {
-                res.status(401).send();
-                return;
-            }
-            // login is successfull there is an user with the given username and password
-           
-            const payload = { user_id: user.userid};
-            jwt.sign(payload, JWT_SECRET, { algorithm: "HS256" }, (error, token) => {
-                if (error) {
-                    console.log(error);
-                    res.status(401).send();
-                    return;
-                }
-                console.log("test")
-                res.status(200).send({
-                    token: token,
-                    user_id: user.userid,
-                    type: user.type
-         
-                     });
-        })
-    });
-  });
 
 app.get('/products', (req, res) => {
     product.getproduct((err, result) => {
