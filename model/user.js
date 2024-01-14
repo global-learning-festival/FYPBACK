@@ -20,6 +20,19 @@ const User = {
         });
     },
 
+    getUsers: function (username, password, type, callback) {
+        return query(`SELECT username, password, type FROM role`).then((result,err) =>{
+            if (err) {
+                callback(err, null);
+                return;
+            }
+            else {
+                return callback(null, result);
+            }
+        });
+
+    },
+
 }
 
 module.exports = User;
