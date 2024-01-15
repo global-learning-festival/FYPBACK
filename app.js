@@ -98,7 +98,7 @@ app.get('/announcements', (req, res) => {
 })
 
 
-app.get('/announcement/:id', (req, res) => {
+app.get('/announcements/:id', (req, res) => {
     var announcementid = parseInt(req.params.id);
     
 
