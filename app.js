@@ -5,7 +5,7 @@ const announcement = require('./model/announcement');
 const map = require('./model/map')
 const events = require('./model/events');
 const importantInformation = require('./model/importantInfo');
-
+const User = require('./model/user');
 const cors = require('cors');
 const app = express();
 const path = require('path');
@@ -13,7 +13,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 const multer = require('multer');
-const User = require('./model/user');
+
 
 // Set up multer storage
 const storage = multer.memoryStorage();
@@ -316,9 +316,9 @@ app.put('/importantinfo/:id', (req, res) => {
 
 
 app.delete('/delete/:id', (req, res) => {
-    var infoid = parseInt(req.params.id);
+    var eventid = parseInt(req.params.id);
 
-    importantInformation.deleteImportantInformation(infoid, (err, result) => {
+    events.deleteEvent(eventid, (err, result) => {
 
         if (err) {
             console.log(err)
