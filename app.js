@@ -63,16 +63,17 @@ app.post('/announcement', (req, res) => {
 
     var title = req.body.title
     var description = req.body.description
+    var imageid = req.body.publicId
 
 
     // call the model method add module
-    announcement.addannouncement(title, description, (err, result) => {
+    announcement.addannouncement(title, description, imageid, (err, result) => {
         if (err) {
             console.log(err)
             // respond the error
             res.status(500).send()
         } else {
-
+            console.log(result)
 
             res.status(201).send(result)
         }
@@ -117,10 +118,11 @@ app.put('/announcements/:id/', (req, res) => {
     var productid = parseInt(req.params.id);
     var title = req.body.title
     var description = req.body.description
+    var image = req.body.publicId
 
 
     // call the model method add module
-    announcement.updateAnnouncement(productid, title, description, (err, result) => {
+    announcement.updateAnnouncement(productid, title, description, image, (err, result) => {
         if (err) {
             console.log(err)
             // respond the error

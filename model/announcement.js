@@ -6,8 +6,8 @@ const { query } = require("../database")
 const announcement = {
    
    
-    addannouncement: function(title , description, callback) {
-        return query(`INSERT INTO announcements ( title , description) VALUES ($1, $2) RETURNING*`, [title , description]).then((result,err) =>{
+    addannouncement: function(title , description, imageid, callback) {
+        return query(`INSERT INTO announcements ( title , description, image) VALUES ($1, $2, $3) RETURNING*`, [title , description, imageid]).then((result,err) =>{
     
             if (err) {
                 callback(err, null);
@@ -35,7 +35,7 @@ const announcement = {
         });
     },
     getannonucementbyid: function(announcementid, callback) {
-        return query(`SELECT announcementid, title, description, TO_CHAR(created_at, 'DD/MM/YYYY ,HH12:MIam') AS "created_on", TO_CHAR(updated_at, 'DD/MM/YYYY ,HH12:MIam') AS "updated_on" FROM announcements WHERE announcementid = $1;`, [announcementid]).then((result,err) =>{
+        return query(`SELECT announcementid, title, description, image, TO_CHAR(created_at, 'DD/MM/YYYY ,HH12:MIam') AS "created_on", TO_CHAR(updated_at, 'DD/MM/YYYY ,HH12:MIam') AS "updated_on" FROM announcements WHERE announcementid = $1;`, [announcementid]).then((result,err) =>{
     
             if (err) {
                 callback(err, null);
@@ -47,8 +47,8 @@ const announcement = {
             
         });
     },
-    updateAnnouncement: function(announcementid, title, description, callback) {
-        return query(`UPDATE announcements SET title = $1, description = $2 WHERE announcementid = $3 RETURNING *`, [title, description, announcementid])
+    updateAnnouncement: function(announcementid, title, description, image, callback) {
+        return query(`UPDATE announcements SET title = $1, description = $2, image = $3 WHERE announcementid = $4 RETURNING *`, [title, description, image, announcementid])
             .then((result, err) => {
                 if (err) {
                     callback(err, null);
