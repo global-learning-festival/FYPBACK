@@ -21,7 +21,7 @@ const announcement = {
         });
     },
 
-    getannonucement: function( callback) {
+    getannonucement: function(callback) {
         return query(`SELECT announcementid, title, description, TO_CHAR(created_at, 'DD/MM/YYYY ,HH12:MIam') AS "created_on", TO_CHAR(updated_at, 'DD/MM/YYYY ,HH12:MIam') AS "updated_on" FROM announcements ORDER BY updated_at DESC;`).then((result,err) =>{
     
             if (err) {
@@ -49,6 +49,7 @@ const announcement = {
     },
     updateAnnouncement: function(announcementid, title, description, image, callback) {
         return query(`UPDATE announcements SET title = $1, description = $2, image = $3 WHERE announcementid = $4 RETURNING *`, [title, description, image, announcementid])
+
             .then((result, err) => {
                 if (err) {
                     callback(err, null);
@@ -58,7 +59,7 @@ const announcement = {
                 }
             });
     },
-    deleteannonucement: function(announcementid, callback) {
+       deleteannonucement: function(announcementid, callback) {
         return query(`DELETE FROM announcements WHERE announcementid = $1;`, [announcementid]).then((result,err) =>{
     
             if (err) {
@@ -71,6 +72,7 @@ const announcement = {
             
         });
     },
+
    
 
 
