@@ -68,7 +68,7 @@ app.post('/announcement', (req, res) => {
 
 
     // call the model method add module
-    announcement.addannouncement(title, description, imageid, (err, result) => {
+    announcement.addAnnouncement(title, description, imageid, (err, result) => {
         if (err) {
             console.log(err)
             // respond the error
@@ -84,7 +84,7 @@ app.post('/announcement', (req, res) => {
 
 //Retrieve announcements
 app.get('/announcements', (req, res) => {
-    announcement.getannonucements((err, result) => {
+    announcement.getAnnouncements((err, result) => {
         if (err) {
             console.log(err)
             // respond with status 500 
@@ -142,7 +142,7 @@ app.put('/announcements/:id/', (req, res) => {
 app.delete('/announcements/:id', (req, res)=>{
     var productid = parseInt(req.params.id);
 
-    announcement.deleteannonucement(productid, (err, result)=>{
+    announcement.deleteAnnouncement(productid, (err, result)=>{
         if(err){
             console.log(err)
             // respond with status 500 

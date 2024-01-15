@@ -6,7 +6,7 @@ const { query } = require("../database")
 const announcement = {
    
    
-    addannouncement: function(title , description, imageid, callback) {
+    addAnnouncement: function(title , description, imageid, callback) {
         return query(`INSERT INTO announcements ( title , description, image) VALUES ($1, $2, $3) RETURNING*`, [title , description, imageid]).then((result,err) =>{
     
             if (err) {
@@ -21,7 +21,7 @@ const announcement = {
         });
     },
 
-    getannonucement: function(callback) {
+    getAnnouncements: function(callback) {
         return query(`SELECT announcementid, title, description, TO_CHAR(created_at, 'DD/MM/YYYY ,HH12:MIam') AS "created_on", TO_CHAR(updated_at, 'DD/MM/YYYY ,HH12:MIam') AS "updated_on" FROM announcements ORDER BY updated_at DESC;`).then((result,err) =>{
     
             if (err) {
@@ -34,7 +34,7 @@ const announcement = {
             
         });
     },
-    getannonucementbyid: function(announcementid, callback) {
+    getAnnouncementById: function(announcementid, callback) {
         return query(`SELECT announcementid, title, description, image, TO_CHAR(created_at, 'DD/MM/YYYY ,HH12:MIam') AS "created_on", TO_CHAR(updated_at, 'DD/MM/YYYY ,HH12:MIam') AS "updated_on" FROM announcements WHERE announcementid = $1;`, [announcementid]).then((result,err) =>{
     
             if (err) {
@@ -59,7 +59,7 @@ const announcement = {
                 }
             });
     },
-       deleteannonucement: function(announcementid, callback) {
+       deleteAnnouncement: function(announcementid, callback) {
         return query(`DELETE FROM announcements WHERE announcementid = $1;`, [announcementid]).then((result,err) =>{
     
             if (err) {
