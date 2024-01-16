@@ -5,16 +5,61 @@ const { query } = require("../database")
 
 const events = {
 
-    addEvent: function (title, image_banner, location, keynote_speaker, description, survey_link, callback) {
-        return query(`INSERT INTO events (title, image_banner, location, keynote_speaker, description, survey_link) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`, [title, image_banner, location, keynote_speaker, description, survey_link])
-            .then((result) => {
-                callback(null, result);
-            })
-            .catch((err) => {
-                console.error(err);
-                callback(err, null);
-            });
+    addEvent: function (title, image_banner, time_start, time_end, location, keynote_speaker, description, survey_link, callback) {
+        if (typeof callback !== 'function') {
+            console.error('Callback is not a function.');
+            return Promise.reject('Callback is not a function.');
+        }
+
+        // Function to format datetime strings
+        const formatDateTime = (datetime) => {
+            // Check if datetime is undefined or null
+            if (datetime === undefined || datetime === null) {
+                throw new Error('Datetime string is undefined or null.');
+            }
+
+            // Parse the input datetime string
+            const parsedDateTime = new Date(datetime);
+
+            // Check if the parsedDateTime is a valid date
+            if (isNaN(parsedDateTime.getTime())) {
+                throw new Error('Invalid datetime string: ' + datetime);
+            }
+
+            // Format the date-time string in 'YYYY-MM-DD HH24:MI:SS' format
+            const formattedDateTime = parsedDateTime.toISOString().replace('T', ' ').replace('Z', '').slice(0, -5);
+
+            return formattedDateTime;
+        };
+
+        try {
+            // Convert datetime-local strings to the required format
+            const formattedStartTime = formatDateTime(time_start);
+            const formattedEndTime = formatDateTime(time_end);
+
+            return query(`
+                INSERT INTO events (title, image_banner, time_start, time_end, location, keynote_speaker, description, survey_link)
+                VALUES ($1, $2, TO_TIMESTAMP($3, 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP($4, 'YYYY-MM-DD HH24:MI:SS'), $5, $6, $7, $8)
+                RETURNING *
+            `, [title, image_banner, formattedStartTime, formattedEndTime, location, keynote_speaker, description, survey_link])
+                .then((result) => {
+                    callback(null, result);
+                    return result;
+                })
+                .catch((err) => {
+                    console.error(err);
+                    callback(err, null);
+                    throw err; // Rethrow the error for further handling if needed
+                });
+        } catch (error) {
+            console.error(error.message);
+            callback(error, null);
+            return Promise.reject(error.message);
+        }
     },
+
+
+
 
     getEvents: function (callback) {
         return query(`SELECT eventid, title, image_banner,

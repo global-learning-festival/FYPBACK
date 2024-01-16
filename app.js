@@ -158,13 +158,15 @@ app.post('/events', (req, res) => {
 
     var title = req.body.title;
     var image_banner = req.body.image_banner;
+    var time_start = req.body.time_start;
+    var time_end = req.body.time_end;
     var location = req.body.location;
     var keynote_speaker = req.body.keynote_speaker;
     var description = req.body.description;
     var survey_link = req.body.survey_link;
 
 
-    events.addEvent(title, image_banner, location, keynote_speaker, description, survey_link, (err, result) => {
+    events.addEvent(title, image_banner, time_start, time_end, location, keynote_speaker, description, survey_link, (err, result) => {
 
         if (err) {
             console.log(err)
