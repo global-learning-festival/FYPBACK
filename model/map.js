@@ -7,8 +7,8 @@ const map = {
    
 
    
-    addmarker: function(location_name, category, description, coordinates, callback) {
-        return query(`INSERT INTO marker (location_name, category, description, coordinates) VALUES ($1, $2, $3, $4) RETURNING*`,[location_name, category, description, coordinates]).then((result,err) =>{
+    addmarker: function(location_name, category, description, coordinates, image, callback) {
+        return query(`INSERT INTO marker (location_name, category, description, coordinates, image) VALUES ($1, $2, $3, $4,$5) RETURNING*`,[location_name, category, description, coordinates, image]).then((result,err) =>{
     
             if (err) {
                 callback(err, null);
@@ -25,7 +25,7 @@ const map = {
 
     
     getmarker: function( callback) {
-        return query(`SELECT mapid, location_name, category, description, coordinates FROM marker`).then((result,err) =>{
+        return query(`SELECT mapid, location_name, category, description, coordinates, image FROM marker`).then((result,err) =>{
     
             if (err) {
                 callback(err, null);
@@ -40,7 +40,7 @@ const map = {
 
      
     getmarkerindiv: function( mapid, callback) {
-        return query(`SELECT mapid, location_name, category, description, coordinates FROM marker where mapid = $1 `, [mapid]).then((result,err) =>{
+        return query(`SELECT mapid, location_name, category, description, coordinates, image FROM marker where mapid = $1 `, [mapid]).then((result,err) =>{
     
             if (err) {
                 callback(err, null);
@@ -77,16 +77,6 @@ const map = {
 
   
 
-    retrieveImage: function(mapid, callback) {
-        return query(`select image from marker where mapid = $1`, [mapid]).then((results,error) =>{
-    
-            if (error) {
-                return callback(error, null);
-              }
-              
-              return callback(null, results.rows[0]);
-        });
-    },
 
     deletemarker: function (mapid, callback) {
         return query(`DELETE FROM marker

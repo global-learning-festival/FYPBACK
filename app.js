@@ -341,8 +341,9 @@ app.post('/marker', (req, res) => {
     var category = req.body.category
     var description = req.body.description
     var coordinates = req.body.coordinates
+    var image = req.body.publicId
 
-    map.addmarker(location_name, category, description, coordinates, (err, result) => {
+    map.addmarker(location_name, category, description, coordinates, image, (err, result) => {
 
         if (err) {
             console.log(err)
