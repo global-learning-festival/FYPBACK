@@ -64,16 +64,17 @@ app.post('/announcement', (req, res) => {
 
     var title = req.body.title
     var description = req.body.description
+    var imageid = req.body.publicId
 
 
     // call the model method add module
-    announcement.addannouncement(title, description, (err, result) => {
+    announcement.addAnnouncement(title, description, imageid, (err, result) => {
         if (err) {
             console.log(err)
             // respond the error
             res.status(500).send()
         } else {
-
+            console.log(result)
 
             res.status(201).send(result)
         }
@@ -83,7 +84,7 @@ app.post('/announcement', (req, res) => {
 
 //Retrieve announcements
 app.get('/announcements', (req, res) => {
-    announcement.getannonucements((err, result) => {
+    announcement.getAnnouncements((err, result) => {
         if (err) {
             console.log(err)
             // respond with status 500 
@@ -97,7 +98,7 @@ app.get('/announcements', (req, res) => {
 })
 
 
-app.get('/announcement/:id', (req, res) => {
+app.get('/announcements/:id', (req, res) => {
     var announcementid = parseInt(req.params.id);
     
 
@@ -120,10 +121,11 @@ app.put('/announcements/:id/', (req, res) => {
     var productid = parseInt(req.params.id);
     var title = req.body.title
     var description = req.body.description
+    var image = req.body.publicId
 
 
     // call the model method add module
-    announcement.updateAnnouncement(productid, title, description, (err, result) => {
+    announcement.updateAnnouncement(productid, title, description, image, (err, result) => {
         if (err) {
             console.log(err)
             // respond the error
@@ -140,7 +142,7 @@ app.put('/announcements/:id/', (req, res) => {
 app.delete('/announcements/:id', (req, res)=>{
     var productid = parseInt(req.params.id);
 
-    announcement.deleteannonucement(productid, (err, result)=>{
+    announcement.deleteAnnouncement(productid, (err, result)=>{
         if(err){
             console.log(err)
             // respond with status 500 
