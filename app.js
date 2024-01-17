@@ -157,7 +157,7 @@ app.delete('/announcements/:id', (req, res)=>{
 app.post('/events', (req, res) => {
 
     var title = req.body.title;
-    var image_banner = req.body.image_banner;
+    var image_banner = req.body.publicId;
     var time_start = req.body.time_start;
     var time_end = req.body.time_end;
     var location = req.body.location;
@@ -215,7 +215,7 @@ app.get('/events/:id', (req, res) => {
 app.put('/events/:id', (req, res) => {
     var eventid = parseInt(req.params.id);
     var title = req.body.title
-    var image_banner = req.body.image_banner
+    var image_banner = req.body.publicId
     var time_start = req.body.time_start
     var time_end = req.body.time_end
     var location = req.body.location
@@ -317,7 +317,22 @@ app.put('/importantinfo/:id', (req, res) => {
     });
 });
 
+app.delete('/delete/:id', (req, res) => {
+    var infoid = parseInt(req.params.id);
 
+    importantInformation.deleteImportantInformation(infoid, (err, result) => {
+
+        if (err) {
+            console.log(err)
+            res.status(500).send()
+        }
+
+        else {
+            res.status(201).send(result)
+        }
+    })
+
+})
 
 app.delete('/delete/:id', (req, res) => {
     var eventid = parseInt(req.params.id);
