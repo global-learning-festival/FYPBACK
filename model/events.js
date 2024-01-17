@@ -13,20 +13,16 @@ const events = {
 
         // Function to format datetime strings
         const formatDateTime = (datetime) => {
-            // Check if datetime is undefined or null
             if (datetime === undefined || datetime === null) {
                 throw new Error('Datetime string is undefined or null.');
             }
 
-            // Parse the input datetime string
             const parsedDateTime = new Date(datetime);
 
-            // Check if the parsedDateTime is a valid date
             if (isNaN(parsedDateTime.getTime())) {
                 throw new Error('Invalid datetime string: ' + datetime);
             }
 
-            // Format the date-time string in 'YYYY-MM-DD HH24:MI:SS' format
             const formattedDateTime = parsedDateTime.toISOString().replace('T', ' ').replace('Z', '').slice(0, -5);
 
             return formattedDateTime;
@@ -39,7 +35,7 @@ const events = {
 
             return query(`
                 INSERT INTO events (title, image_banner, time_start, time_end, location, keynote_speaker, description, survey_link)
-                VALUES ($1, $2, TO_TIMESTAMP($3, 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP($4, 'YYYY-MM-DD HH24:MI:SS'), $5, $6, $7, $8)
+                VALUES ($1, $2, TO_TIMESTAMP($3, 'YYYY-MM-DD HH24:MI:SS') AT TIME ZONE 'Asia/Singapore', TO_TIMESTAMP($4, 'YYYY-MM-DD HH24:MI:SS'), $5, $6, $7, $8)
                 RETURNING *
             `, [title, image_banner, formattedStartTime, formattedEndTime, location, keynote_speaker, description, survey_link])
                 .then((result) => {
@@ -49,7 +45,7 @@ const events = {
                 .catch((err) => {
                     console.error(err);
                     callback(err, null);
-                    throw err; // Rethrow the error for further handling if needed
+                    throw err;
                 });
         } catch (error) {
             console.error(error.message);
@@ -75,37 +71,113 @@ const events = {
                 callback(err, null);
             });
     },
+    //this function gets everything but time format in UTC
     getEventbyId: function (eventid, callback) {
-        return query('SELECT * FROM events WHERE eventid = $1', [eventid])
-            .then((result, err) => {
-                if (err) {
+       return query(`SELECT eventid, title, image_banner,
+       TO_CHAR(time_start AT TIME ZONE \'Asia/Singapore\', 'YYYY-MM-DD HH24:MI:SS' ) AS "time_start",
+       TO_CHAR(time_end AT TIME ZONE \'Asia/Singapore\', 'YYYY-MM-DD HH24:MI:SS' ) AS "time_end",
+       location, keynote_speaker, description, survey_link
+       FROM events WHERE eventid = $1`, [eventid])
+      
+       .then((result, err) => {
+               if (err) {
                     callback(err, null);
                     console.log(err);
                     return;
                 } else {
-                    console.log(result);
+                   console.log(result);
                     callback(null, result);
-                }
+               }
             });
-    },
-    updateEvent: function (eventid, title, image_banner, time_start, time_end, location, keynote_speaker, description, survey_link, callback) {
-        // Ensure non-empty values for time_start and time_end
-        const formattedTimeStart = time_start ? new Date(time_start).toUTCString() : null;
-        const formattedTimeEnd = time_end ? new Date(time_end).toUTCString() : null;
+   },
+   // this function status 200 but gets nothing in postman
+//    getEventbyId: function (eventid, callback) {
+//     const formatDateTime = (datetime) => {
+//         if (datetime === undefined || datetime === null) {
+//             return null;
+//         }
 
-        return query(
-            'UPDATE events SET title = $2, image_banner = $3, time_start = $4, time_end = $5, location = $6, keynote_speaker = $7, description = $8, survey_link = $9 WHERE eventid = $1 RETURNING *',
-            [eventid, title, image_banner, formattedTimeStart, formattedTimeEnd, location, keynote_speaker, description, survey_link]
-        )
-            .then((result) => {
-                // Successfully updated, pass result to callback
-                callback(null, result);
-            })
-            .catch((error) => {
-                // Handle errors and pass to callback
-                console.error('Error updating event information:', error);
-                callback(error, null);
-            });
+//         const parsedDateTime = new Date(datetime);
+
+//         if (isNaN(parsedDateTime.getTime())) {
+//             throw new Error('Invalid datetime string: ' + datetime);
+//         }
+
+//         // Format the datetime to a string in the desired format
+//         const formattedDateTime = parsedDateTime.toISOString().replace('T', ' ').replace('Z', '').slice(0, -5);
+
+//         return formattedDateTime;
+//     };
+
+//     const queryText = 'SELECT *, time_start AT TIME ZONE \'Asia/Singapore\' AS time_start, time_end AT TIME ZONE \'Asia/Singapore\' AS time_end FROM events WHERE eventid = $1';
+
+//     query(queryText, [eventid])
+//         .then((result) => {
+//             // Format the datetime values in the result
+//             const formattedResult = result.rows.map(row => ({
+//                 ...row,
+//                 formatted_time_start: formatDateTime(row.time_start),
+//                 formatted_time_end: formatDateTime(row.time_end)
+//             }));
+
+//             console.log(formattedResult);
+//             callback(null, formattedResult);
+//         })
+//         .catch((error) => {
+//             console.error('Error executing query:', error);
+//             callback(error, null); // Pass the error to the callback
+//         });
+// },
+
+    
+    updateEvent: function (eventid, title, image_banner, time_start, time_end, location, keynote_speaker, description, survey_link, callback) {
+        if (typeof callback !== 'function') {
+            console.error('Callback is not a function.');
+            return Promise.reject('Callback is not a function.');
+        }
+
+        // Function to format datetime strings
+        const formatDateTime = (datetime) => {
+            if (datetime === undefined || datetime === null) {
+                throw new Error('Datetime string is undefined or null.');
+            }
+
+            const parsedDateTime = new Date(datetime);
+
+            if (isNaN(parsedDateTime.getTime())) {
+                throw new Error('Invalid datetime string: ' + datetime);
+            }
+
+            const formattedDateTime = parsedDateTime.toISOString().replace('T', ' ').replace('Z', '').slice(0, -5);
+
+            return formattedDateTime;
+        };
+
+        try {
+            const formattedStartTime = formatDateTime(time_start);
+            const formattedEndTime = formatDateTime(time_end);
+
+            return query(
+                'UPDATE events SET title = $2, image_banner = $3, time_start = TO_TIMESTAMP($4, \'YYYY-MM-DD HH24:MI:SS\') AT TIME ZONE \'Asia/Singapore\', time_end = TO_TIMESTAMP($5, \'YYYY-MM-DD HH24:MI:SS\') AT TIME ZONE \'Asia/Singapore\', location = $6, keynote_speaker = $7, description = $8, survey_link = $9 WHERE eventid = $1 RETURNING *',
+                [eventid, title, image_banner, formattedStartTime, formattedEndTime, location, keynote_speaker, description, survey_link]
+            )
+
+
+
+                .then((result) => {
+                    // Successfully updated, pass result to callback
+                    callback(null, result);
+                })
+                .catch((error) => {
+                    // Handle errors and pass to callback
+                    console.error('Error updating event information:', error);
+                    callback(error, null);
+                });
+        } catch (error) {
+            // Catch and handle any errors in the try block
+            console.error('Error updating event information:', error.message);
+            callback(error, null);
+        }
     },
 
 
@@ -116,8 +188,7 @@ const events = {
             [eventid])
             .then((result, err) => {
 
-                return query(`SELECT eventid, title, image_banner, TO_CHAR(time_start, 'DD/MM/YYYY ,HH12:MIam') AS "time_start", TO_CHAR(time_end, 'DD/MM/YYYY ,HH12:MIam') AS "time_end", location, keynote_speaker, description, survey_link FROM events`).then((result, err) => {
-                    if (err) {
+                if (err) {
                         callback(err, null);
                         return;
                     }
@@ -127,8 +198,7 @@ const events = {
 
                 });
             },
-            )
-    },
+            
 }
 
 module.exports = events;
