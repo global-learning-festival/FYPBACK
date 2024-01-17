@@ -157,14 +157,16 @@ app.delete('/announcements/:id', (req, res)=>{
 app.post('/events', (req, res) => {
 
     var title = req.body.title;
-    var image_banner = req.body.image_banner;
+    var image_banner = req.body.publicId;
+    var time_start = req.body.time_start;
+    var time_end = req.body.time_end;
     var location = req.body.location;
     var keynote_speaker = req.body.keynote_speaker;
     var description = req.body.description;
     var survey_link = req.body.survey_link;
 
 
-    events.addEvent(title, image_banner, location, keynote_speaker, description, survey_link, (err, result) => {
+    events.addEvent(title, image_banner, time_start, time_end, location, keynote_speaker, description, survey_link, (err, result) => {
 
         if (err) {
             console.log(err)
@@ -213,7 +215,7 @@ app.get('/events/:id', (req, res) => {
 app.put('/events/:id', (req, res) => {
     var eventid = parseInt(req.params.id);
     var title = req.body.title
-    var image_banner = req.body.image_banner
+    var image_banner = req.body.publicId
     var time_start = req.body.time_start
     var time_end = req.body.time_end
     var location = req.body.location
@@ -315,7 +317,22 @@ app.put('/importantinfo/:id', (req, res) => {
     });
 });
 
+app.delete('/delete/:id', (req, res) => {
+    var infoid = parseInt(req.params.id);
 
+    importantInformation.deleteImportantInformation(infoid, (err, result) => {
+
+        if (err) {
+            console.log(err)
+            res.status(500).send()
+        }
+
+        else {
+            res.status(201).send(result)
+        }
+    })
+
+})
 
 app.delete('/delete/:id', (req, res) => {
     var eventid = parseInt(req.params.id);
@@ -339,8 +356,9 @@ app.post('/marker', (req, res) => {
     var category = req.body.category
     var description = req.body.description
     var coordinates = req.body.coordinates
+    var image = req.body.publicId
 
-    map.addmarker(location_name, category, description, coordinates, (err, result) => {
+    map.addmarker(location_name, category, description, coordinates, image, (err, result) => {
 
         if (err) {
             console.log(err)
