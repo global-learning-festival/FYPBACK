@@ -8,18 +8,19 @@ const importantInformation = require('./model/importantInfo');
 const User = require('./model/user');
 const cors = require('cors');
 const app = express();
+const { hashSync } = require('bcrypt')
 const path = require('path');
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
-
-const multer = require('multer');
-
 
 // Set up multer storage
+const multer = require('multer');
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
+
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 app.use(cors());
+
 //Test
 app.post('/product', (req, res) => {
 
@@ -64,16 +65,18 @@ app.post('/announcement', (req, res) => {
 
     var title = req.body.title
     var description = req.body.description
+    var image = req.body.publicId
+    var eventid = req.body.eventid
 
 
     // call the model method add module
-    announcement.addannouncement(title, description, (err, result) => {
+    announcement.addAnnouncement(title, description, image, eventid, (err, result) => {
         if (err) {
             console.log(err)
             // respond the error
             res.status(500).send()
         } else {
-
+            console.log(result)
 
             res.status(201).send(result)
         }
@@ -83,7 +86,7 @@ app.post('/announcement', (req, res) => {
 
 //Retrieve announcements
 app.get('/announcements', (req, res) => {
-    announcement.getannonucements((err, result) => {
+    announcement.getAnnouncements((err, result) => {
         if (err) {
             console.log(err)
             // respond with status 500 
@@ -97,7 +100,7 @@ app.get('/announcements', (req, res) => {
 })
 
 
-app.get('/announcement/:id', (req, res) => {
+app.get('/announcements/:id', (req, res) => {
     var announcementid = parseInt(req.params.id);
     
 
@@ -113,6 +116,22 @@ app.get('/announcement/:id', (req, res) => {
     });
 });
 
+app.get('/eventsannouncement', (req, res) => {
+
+    announcement.getEventList((err, result) => {
+
+        if (err) {
+            console.log(err)
+            res.status(500).send()
+        }
+
+        else {
+            console.log(result)
+            res.status(200).send(result.rows)
+        }
+    })
+
+})
 
 
 app.put('/announcements/:id/', (req, res) => {
@@ -120,10 +139,11 @@ app.put('/announcements/:id/', (req, res) => {
     var productid = parseInt(req.params.id);
     var title = req.body.title
     var description = req.body.description
+    var image = req.body.publicId
 
 
     // call the model method add module
-    announcement.updateAnnouncement(productid, title, description, (err, result) => {
+    announcement.updateAnnouncement(productid, title, description, image, (err, result) => {
         if (err) {
             console.log(err)
             // respond the error
@@ -140,7 +160,7 @@ app.put('/announcements/:id/', (req, res) => {
 app.delete('/announcements/:id', (req, res)=>{
     var productid = parseInt(req.params.id);
 
-    announcement.deleteannonucement(productid, (err, result)=>{
+    announcement.deleteAnnouncement(productid, (err, result)=>{
         if(err){
             console.log(err)
             // respond with status 500 
@@ -155,14 +175,16 @@ app.delete('/announcements/:id', (req, res)=>{
 app.post('/events', (req, res) => {
 
     var title = req.body.title;
-    var image_banner = req.body.image_banner;
+    var image_banner = req.body.publicId;
+    var time_start = req.body.time_start;
+    var time_end = req.body.time_end;
     var location = req.body.location;
     var keynote_speaker = req.body.keynote_speaker;
     var description = req.body.description;
     var survey_link = req.body.survey_link;
 
 
-    events.addEvent(title, image_banner, location, keynote_speaker, description, survey_link, (err, result) => {
+    events.addEvent(title, image_banner, time_start, time_end, location, keynote_speaker, description, survey_link, (err, result) => {
 
         if (err) {
             console.log(err)
@@ -211,7 +233,7 @@ app.get('/events/:id', (req, res) => {
 app.put('/events/:id', (req, res) => {
     var eventid = parseInt(req.params.id);
     var title = req.body.title
-    var image_banner = req.body.image_banner
+    var image_banner = req.body.publicId
     var time_start = req.body.time_start
     var time_end = req.body.time_end
     var location = req.body.location
@@ -313,7 +335,22 @@ app.put('/importantinfo/:id', (req, res) => {
     });
 });
 
+app.delete('/delete/:id', (req, res) => {
+    var infoid = parseInt(req.params.id);
 
+    importantInformation.deleteImportantInformation(infoid, (err, result) => {
+
+        if (err) {
+            console.log(err)
+            res.status(500).send()
+        }
+
+        else {
+            res.status(201).send(result)
+        }
+    })
+
+})
 
 app.delete('/delete/:id', (req, res) => {
     var eventid = parseInt(req.params.id);
@@ -337,8 +374,9 @@ app.post('/marker', (req, res) => {
     var category = req.body.category
     var description = req.body.description
     var coordinates = req.body.coordinates
+    var image = req.body.publicId
 
-    map.addmarker(location_name, category, description, coordinates, (err, result) => {
+    map.addmarker(location_name, category, description, coordinates, image, (err, result) => {
 
         if (err) {
             console.log(err)

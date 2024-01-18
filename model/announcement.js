@@ -6,8 +6,8 @@ const { query } = require("../database")
 const announcement = {
    
    
-    addannouncement: function(title , description, callback) {
-        return query(`INSERT INTO announcements ( title , description) VALUES ($1, $2) RETURNING*`, [title , description]).then((result,err) =>{
+    addAnnouncement: function(title , description, image, eventid, callback) {
+        return query(`INSERT INTO announcements ( title , description, image, eventid) VALUES ($1, $2, $3, $4) RETURNING*`, [title , description, image, eventid]).then((result,err) =>{
     
             if (err) {
                 callback(err, null);
@@ -21,7 +21,7 @@ const announcement = {
         });
     },
 
-    getannonucements: function(callback) {
+    getAnnouncements: function(callback) {
         return query(`SELECT announcementid, title, description, TO_CHAR(created_at, 'DD/MM/YYYY ,HH12:MIam') AS "created_on", TO_CHAR(updated_at, 'DD/MM/YYYY ,HH12:MIam') AS "updated_on" FROM announcements ORDER BY updated_at DESC;`).then((result,err) =>{
     
             if (err) {
@@ -34,32 +34,58 @@ const announcement = {
             
         });
     },
-
-    getAnnouncementById: function (announcementid, callback) {
-        return query('SELECT * FROM announcements WHERE infoid = $1', [announcementid])
-            .then((result, err) => {
-                if (err) {
-                    callback(err, null);
-                    console.log(err);
-                    return;
-                } else {
-                    callback(null, result);
-                }
-            });
-    },
-
-    updateAnnouncement: function(announcementid, title, description, callback) {
-        return query(`UPDATE announcements SET title = $1, description = $2 WHERE announcementid = $3 RETURNING *`, [title, description, announcementid])
-            .then((result, err) => {
-                if (err) {
-                    callback(err, null);
-                    console.log(err);
-                } else {
-                    callback(null, result);
-                }
-            });
-    },
+    getAnnouncementById: function(announcementid, callback) {
+        return query(`SELECT announcementid, title, description, image, TO_CHAR(created_at, 'DD/MM/YYYY ,HH12:MIam') AS "created_on", TO_CHAR(updated_at, 'DD/MM/YYYY ,HH12:MIam') AS "updated_on" FROM announcements WHERE announcementid = $1;`, [announcementid]).then((result,err) =>{
     
+            if (err) {
+                callback(err, null);
+                return;
+            }
+            else  {
+                return callback(null, result);
+            } 
+            
+        });
+    },
+    updateAnnouncement: function(announcementid, title, description, image, callback) {
+        return query(`UPDATE announcements SET title = $1, description = $2, image = $3 WHERE announcementid = $4 RETURNING *`, [title, description, image, announcementid])
+
+            .then((result, err) => {
+                if (err) {
+                    callback(err, null);
+                    console.log(err);
+                } else {
+                    callback(null, result);
+                }
+            });
+    },
+       deleteAnnouncement: function(announcementid, callback) {
+        return query(`DELETE FROM announcements WHERE announcementid = $1;`, [announcementid]).then((result,err) =>{
+    
+            if (err) {
+                callback(err, null);
+                return;
+            }
+            else  {
+                return callback(null, result);
+            } 
+            
+        });
+    },
+    getEventList: function(callback) {
+        return query(`SELECT eventid, title FROM events`).then((result,err) =>{
+    
+            if (err) {
+                callback(err, null);
+                return;
+            }
+            else  {
+                return callback(null, result);
+            } 
+            
+        });
+    },
+
    
 
 

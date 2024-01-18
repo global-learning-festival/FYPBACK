@@ -24,6 +24,7 @@ const Redirect = async (code) => {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
     });
+
     
     // Process the response as needed (e.g., save the access token)
 
