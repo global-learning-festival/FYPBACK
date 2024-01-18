@@ -21,16 +21,15 @@ const User = {
     },
 
     getUsers: function(callback) {
-        return query(`SELECT roleid, username, password, type FROM role ORDER BY updated_at DESC;`).then((result,err) =>{
-    
+        return query(`SELECT roleid, username, password, type FROM role;`).then((result, err) => {
             if (err) {
+                console.error('Error fetching users:', err);
                 callback(err, null);
                 return;
-            }
-            else  {
+            } else {
+                console.log('Users fetched successfully:', result);
                 return callback(null, result);
-            } 
-            
+            }
         });
     },
     getUserByType: function(type, callback) {

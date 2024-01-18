@@ -1,14 +1,14 @@
 const axios = require('axios');
+const qs = require('querystring');
 require('dotenv').config();
 
 const Authorization = () => {
-  const authUrl = `https://www.linkedin.com/oauth/v2/authorization?client_id=${process.env.CLIENT_ID}&response_type=code&scope=${process.env.SCOPE}&redirect_uri=${process.env.REDIRECT_URL}`;
+  const authUrl = `https://www.linkedin.com/oauth/v2/authorization?client_id=${process.env.CLIENT_ID}&response_type=code&scope=${process.env.SCOPE}&redirect_uri=${process.env.REDIRECT_URI}`;
   return encodeURI(authUrl);
 };  
 
 const Redirect = async (code) => {
   try {
-    const tokenUrl = `https://www.linkedin.com/oauth/v2/accessToken?${qs.stringify(payload)}`;
     const payload = {
       client_id: process.env.CLIENT_ID,
       client_secret: process.env.CLIENT_SECRET,
@@ -17,9 +17,14 @@ const Redirect = async (code) => {
       code: code,
     };
 
-    const response = await axios.post(tokenUrl, payload, headers({
-      'Content-Type':'x-www-form-urlencoded'
-    }));
+    const tokenUrl = `https://www.linkedin.com/oauth/v2/accessToken?${qs.stringify(payload)}`;
+
+    const response = await axios.post(tokenUrl, qs.stringify(payload), {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+    });
+
     
     // Process the response as needed (e.g., save the access token)
 

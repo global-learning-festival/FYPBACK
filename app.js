@@ -8,18 +8,19 @@ const importantInformation = require('./model/importantInfo');
 const User = require('./model/user');
 const cors = require('cors');
 const app = express();
+const { hashSync } = require('bcrypt')
 const path = require('path');
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
-
-const multer = require('multer');
-
 
 // Set up multer storage
+const multer = require('multer');
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
+
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 app.use(cors());
+
 //Test
 app.post('/product', (req, res) => {
 
@@ -458,9 +459,6 @@ app.delete('/delmarker/:id', (req, res) => {
 })
 
 
-
-
-
 app.post('/adduser', (req, res) => {
 
     var username = req.body.username
@@ -501,7 +499,22 @@ app.post('/login', (req, res) => {
 
 })
 
+app.get('/users', (req, res) => {
 
+    User.getUsers((err, result) => {
+
+        if (err) {
+            console.log(err)
+            res.status(500).send()
+        }
+
+        else {
+            console.log(result)
+            res.status(200).send(result.rows)
+        }
+    })
+
+})
 
 
 
