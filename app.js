@@ -440,9 +440,6 @@ app.delete('/delmarker/:id', (req, res) => {
 })
 
 
-
-
-
 app.post('/adduser', (req, res) => {
 
     var username = req.body.username
@@ -483,7 +480,22 @@ app.post('/login', (req, res) => {
 
 })
 
+app.get('/users', (req, res) => {
 
+    User.getUsers((err, result) => {
+
+        if (err) {
+            console.log(err)
+            res.status(500).send()
+        }
+
+        else {
+            console.log(result)
+            res.status(200).send(result.rows)
+        }
+    })
+
+})
 
 
 
