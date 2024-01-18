@@ -65,12 +65,11 @@ app.post('/announcement', (req, res) => {
 
     var title = req.body.title
     var description = req.body.description
-    var image = req.body.publicId
-    var eventid = req.body.eventid
-
+    var imageid = req.body.publicId
+    var eventid = req.body.event
 
     // call the model method add module
-    announcement.addAnnouncement(title, description, image, eventid, (err, result) => {
+    announcement.addAnnouncement(title, description, imageid, eventid, (err, result) => {
         if (err) {
             console.log(err)
             // respond the error
@@ -140,10 +139,12 @@ app.put('/announcements/:id/', (req, res) => {
     var title = req.body.title
     var description = req.body.description
     var image = req.body.publicId
+    var eventid = req.body.event
+
 
 
     // call the model method add module
-    announcement.updateAnnouncement(productid, title, description, image, (err, result) => {
+    announcement.updateAnnouncement(productid, title, description, image,eventid, (err, result) => {
         if (err) {
             console.log(err)
             // respond the error
