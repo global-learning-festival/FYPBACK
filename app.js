@@ -8,18 +8,19 @@ const importantInformation = require('./model/importantInfo');
 const User = require('./model/user');
 const cors = require('cors');
 const app = express();
+const { hashSync } = require('bcrypt')
 const path = require('path');
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
-
-const multer = require('multer');
-
 
 // Set up multer storage
+const multer = require('multer');
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
+
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 app.use(cors());
+
 //Test
 app.post('/product', (req, res) => {
 
