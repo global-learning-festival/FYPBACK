@@ -64,11 +64,12 @@ app.post('/announcement', (req, res) => {
 
     var title = req.body.title
     var description = req.body.description
-    var imageid = req.body.publicId
+    var image = req.body.publicId
+    var eventid = req.body.eventid
 
 
     // call the model method add module
-    announcement.addAnnouncement(title, description, imageid, (err, result) => {
+    announcement.addAnnouncement(title, description, image, eventid, (err, result) => {
         if (err) {
             console.log(err)
             // respond the error
@@ -114,6 +115,22 @@ app.get('/announcements/:id', (req, res) => {
     });
 });
 
+app.get('/eventsannouncement', (req, res) => {
+
+    announcement.getEventList((err, result) => {
+
+        if (err) {
+            console.log(err)
+            res.status(500).send()
+        }
+
+        else {
+            console.log(result)
+            res.status(200).send(result.rows)
+        }
+    })
+
+})
 
 
 app.put('/announcements/:id/', (req, res) => {
