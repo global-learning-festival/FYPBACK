@@ -32,7 +32,6 @@ const User = {
             }
         });
     },
-    
     getUserByType: function(type, callback) {
         return query(`SELECT roleid, username, password, type FROM announcements WHERE type = $1;`, [type]).then((result,err) =>{
     

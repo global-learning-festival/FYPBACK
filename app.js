@@ -8,18 +8,19 @@ const importantInformation = require('./model/importantInfo');
 const User = require('./model/user');
 const cors = require('cors');
 const app = express();
+const { hashSync } = require('bcrypt')
 const path = require('path');
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
-
-const multer = require('multer');
-
 
 // Set up multer storage
+const multer = require('multer');
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
+
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 app.use(cors());
+
 //Test
 app.post('/product', (req, res) => {
 
@@ -64,11 +65,12 @@ app.post('/announcement', (req, res) => {
 
     var title = req.body.title
     var description = req.body.description
-    var imageid = req.body.publicId
+    var image = req.body.publicId
+    var eventid = req.body.eventid
 
 
     // call the model method add module
-    announcement.addAnnouncement(title, description, imageid, (err, result) => {
+    announcement.addAnnouncement(title, description, image, eventid, (err, result) => {
         if (err) {
             console.log(err)
             // respond the error
@@ -114,6 +116,22 @@ app.get('/announcements/:id', (req, res) => {
     });
 });
 
+app.get('/eventsannouncement', (req, res) => {
+
+    announcement.getEventList((err, result) => {
+
+        if (err) {
+            console.log(err)
+            res.status(500).send()
+        }
+
+        else {
+            console.log(result)
+            res.status(200).send(result.rows)
+        }
+    })
+
+})
 
 
 app.put('/announcements/:id/', (req, res) => {
