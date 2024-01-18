@@ -22,7 +22,7 @@ const announcement = {
     },
 
     getAnnouncements: function(callback) {
-        return query(`SELECT announcementid, title, description, TO_CHAR(created_at, 'DD/MM/YYYY ,HH12:MIam') AS "created_on", TO_CHAR(updated_at, 'DD/MM/YYYY ,HH12:MIam') AS "updated_on" FROM announcements ORDER BY updated_at DESC;`).then((result,err) =>{
+        return query(`SELECT announcementid, eventid, title, description, TO_CHAR(created_at, 'DD/MM/YYYY ,HH12:MIam') AS "created_on", TO_CHAR(updated_at, 'DD/MM/YYYY ,HH12:MIam') AS "updated_on" FROM announcements ORDER BY updated_at DESC;`).then((result,err) =>{
     
             if (err) {
                 callback(err, null);
@@ -35,7 +35,7 @@ const announcement = {
         });
     },
     getAnnouncementById: function(announcementid, callback) {
-        return query(`SELECT announcementid, title, description, image, TO_CHAR(created_at, 'DD/MM/YYYY ,HH12:MIam') AS "created_on", TO_CHAR(updated_at, 'DD/MM/YYYY ,HH12:MIam') AS "updated_on" FROM announcements WHERE announcementid = $1;`, [announcementid]).then((result,err) =>{
+        return query(`SELECT announcementid,eventid, title, description, image, TO_CHAR(created_at, 'DD/MM/YYYY ,HH12:MIam') AS "created_on", TO_CHAR(updated_at, 'DD/MM/YYYY ,HH12:MIam') AS "updated_on" FROM announcements WHERE announcementid = $1;`, [announcementid]).then((result,err) =>{
     
             if (err) {
                 callback(err, null);
@@ -47,8 +47,8 @@ const announcement = {
             
         });
     },
-    updateAnnouncement: function(announcementid, title, description, image, callback) {
-        return query(`UPDATE announcements SET title = $1, description = $2, image = $3 WHERE announcementid = $4 RETURNING *`, [title, description, image, announcementid])
+    updateAnnouncement: function(announcementid, title, description, image,eventid, callback) {
+        return query(`UPDATE announcements SET title = $1, description = $2, image = $3,eventid = $4 WHERE announcementid = $5 RETURNING *`, [title, description, image,eventid, announcementid])
 
             .then((result, err) => {
                 if (err) {
