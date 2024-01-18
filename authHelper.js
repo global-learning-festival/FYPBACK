@@ -1,5 +1,5 @@
 const axios = require('axios');
-const qs = require('querystring')
+const qs = require('querystring');
 require('dotenv').config();
 
 const Authorization = () => {
@@ -19,9 +19,12 @@ const Redirect = async (code) => {
 
     const tokenUrl = `https://www.linkedin.com/oauth/v2/accessToken?${qs.stringify(payload)}`;
 
-    const response = await axios.post(tokenUrl, payload, headers({
-      'Content-Type':'x-www-form-urlencoded'
-    }));
+    const response = await axios.post(tokenUrl, qs.stringify(payload), {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+    });
+
     
     // Process the response as needed (e.g., save the access token)
 
