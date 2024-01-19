@@ -132,6 +132,21 @@ app.get('/eventsannouncement', (req, res) => {
 
 })
 
+app.get('/eventannouncements/:eventid', (req, res) => {
+    const { eventid } = req.params;
+
+    // Use the announcement module to get announcements tied to the specified event ID
+    announcement.getAnnouncementsByEventId(eventid, (err, result) => {
+        if (err) {
+            console.error(err);
+            res.status(500).send();
+        } else {
+            console.log(result);
+            res.status(200).send(result.rows);
+        }
+    });
+});
+
 
 app.put('/announcements/:id/', (req, res) => {
 

@@ -86,9 +86,19 @@ const announcement = {
         });
     },
 
-   
-
-
+    getAnnouncementsByEventId: function (eventid, callback) {
+    return query(
+        `SELECT announcementid, eventid, title, description, TO_CHAR(created_at, 'DD/MM/YYYY ,HH12:MIam') AS "created_on", TO_CHAR(updated_at, 'DD/MM/YYYY ,HH12:MIam') AS "updated_on" FROM announcements WHERE eventid = $1 ORDER BY updated_at DESC;`,
+        [eventid]
+    ).then((result, err) => {
+        if (err) {
+            callback(err, null);
+            return;
+        } else {
+            return callback(null, result);
+        }
+    });
+},
 
 }
 
