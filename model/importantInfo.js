@@ -6,7 +6,7 @@ const { query } = require("../database")
 const importantInformation = {
    
     addImportantInfomation: function (title, subtitle, description, callback) {
-        return query(`INSERT INTO importantinfo (title, subtitle, description) VALUES ($1, $2, $3) RETURNING*`, [title, subtitle, description]).then((result,err) =>{
+        return query(`INSERT INTO importantinfo (title, subtitle, description, image) VALUES ($1, $2, $3, $4) RETURNING*`, [title, subtitle, description]).then((result,err) =>{
     
             if (err) {
                 callback(err, null);
@@ -21,7 +21,7 @@ const importantInformation = {
     },
 
     getImportantInfomation: function (callback) {
-        return query(`SELECT infoid, title, subtitle, description FROM importantinfo`).then((result,err) =>{
+        return query(`SELECT infoid, title, subtitle, description, image FROM importantinfo`).then((result,err) =>{
     
             if (err) {
                 callback(err, null);
@@ -46,10 +46,10 @@ const importantInformation = {
             });
     },
     
-        updateImportantInformation: function (infoid, title, subtitle, description, callback) {
+        updateImportantInformation: function (infoid, title, subtitle, description, image, callback) {
         return query(
-          'UPDATE importantinfo SET title = $2, subtitle = $3, description = $4 WHERE infoid = $1 RETURNING *',
-          [infoid, title, subtitle, description]
+          'UPDATE importantinfo SET title = $2, subtitle = $3, description = $4. image = $5 WHERE infoid = $1 RETURNING *',
+          [infoid, title, subtitle, description, image]
         )
           .then((result, err) => {
             if (err) {
