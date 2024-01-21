@@ -273,8 +273,9 @@ app.post('/importantInformation', (req, res) => {
     var title = req.body.title
     var subtitle = req.body.subtitle
     var description = req.body.description
+    var image = req.body.publicId
 
-    importantInformation.addImportantInfomation(title, subtitle, description, (err, result) => {
+    importantInformation.addImportantInfomation(title, subtitle, description, image ,(err, result) => {
 
         if (err) {
             console.log(err)
@@ -325,8 +326,9 @@ app.put('/importantinfo/:id', (req, res) => {
     var title = req.body.title
     var subtitle = req.body.subtitle
     var description = req.body.description
+    var image = req.body.publicId
   
-    importantInformation.updateImportantInformation(infoid, title, subtitle, description, (err, result) => {
+    importantInformation.updateImportantInformation(infoid, title, subtitle, description,image,  (err, result) => {
       if (err) {
         console.error(err);
         res.status(500).send();
