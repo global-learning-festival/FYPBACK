@@ -5,7 +5,7 @@ const { query } = require("../database")
 
 const User = {
 
-    addUser: function (username, password, type, callback) {
+    addadmin: function (username, password, type, callback) {
         return query(`INSERT INTO role (username, password, type) VALUES ($1, $2, $3) RETURNING*`, [username, password, type]).then((result,err) =>{
 
             if (err) {
@@ -70,6 +70,34 @@ const User = {
             
         });
     },
+    addUser: function (first_name, last_name, company, uid, callback) {
+        return query(`INSERT INTO users (first_name, last_name, company, uid) VALUES ($1, $2, $3, $4) RETURNING*`, [first_name, last_name, company, uid]).then((result,err) =>{
+
+            if (err) {
+                callback(err, null);
+                console.log(err)
+                return;
+            }
+            else  {
+                return callback(null, result);
+            } 
+
+        });
+    },
+
+  
+getUserByUid: function(uid, callback) {
+    return query(`SELECT * FROM users WHERE uid = $1`, [uid])
+        .then(result => {
+            // Return the user if found, otherwise return null
+            return callback(null, result.rows.length > 0 ? result.rows[0] : null);
+        })
+        .catch(err => {
+            console.error('Error retrieving user by UID:', err);
+            callback(err, null);
+        });
+},
+
 
 }
 
