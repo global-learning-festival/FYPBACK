@@ -1,7 +1,7 @@
 const cluster = require('cluster');
 const express = require('express');
 const axios = require('axios');
-const qs = require('querystring');
+const {Authorization, Redirect } = require('./authHelper')
 require('dotenv').config('.env');
 
 const app = express();
@@ -11,37 +11,6 @@ const cCPUs = 1;
 process.env.NODE_NO_WARNINGS = 1;
 
 app.use(express.json());
-
-const Authorization = () => {
-  const authUrl = `https://www.linkedin.com/oauth/v2/authorization?client_id=${process.env.CLIENT_ID}&response_type=code&scope=${process.env.SCOPE}&redirect_uri=${process.env.REDIRECT_URI}`;
-  return encodeURI(authUrl);
-};  
-
-const Redirect = async (code) => {
-  try {
-    const payload = {
-      client_id: process.env.CLIENT_ID,
-      client_secret: process.env.CLIENT_SECRET,
-      redirect_uri: process.env.REDIRECT_URI,
-      grant_type: 'authorization_code',
-      code: code,
-    };
-
-    const tokenUrl = `https://www.linkedin.com/oauth/v2/accessToken?${qs.stringify(payload)}`;
-
-    const response = await axios.post(tokenUrl, null, {
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-    });
-
-    // Process the response as needed (e.g., save the access token)
-    return { success: true, data: response.data };
-  } catch (error) {
-    console.error('Error while exchanging code for access token:', error);
-    return { success: false, error: error.message };
-  }
-};
 
 if (cluster.isMaster) {
   // Create a worker for each CPU
