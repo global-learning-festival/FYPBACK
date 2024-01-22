@@ -133,9 +133,9 @@ app.get('/eventsannouncement', (req, res) => {
 })
 
 app.get('/eventannouncements/:eventid', (req, res) => {
-    const { eventid } = req.params;
-
+    
     // Use the announcement module to get announcements tied to the specified event ID
+    const { eventid } = req.params;
     announcement.getAnnouncementsByEventId(eventid, (err, result) => {
         if (err) {
             console.error(err);
@@ -195,9 +195,9 @@ app.post('/events', (req, res) => {
     var time_start = req.body.time_start;
     var time_end = req.body.time_end;
     var location = req.body.location;
+    var survey_link = req.body.survey_link;
     var keynote_speaker = req.body.keynote_speaker;
     var description = req.body.description;
-    var survey_link = req.body.survey_link;
 
 
     events.addEvent(title, image_banner, time_start, time_end, location, keynote_speaker, description, survey_link, (err, result) => {
@@ -575,12 +575,44 @@ app.get('/useruid/:uid', (req, res) => {
 
 app.post('/saveevent', (req, res) => {
 
-    var userid = req.body.userid
+    var uid = req.body.uid
     var eventid = req.body.eventid
  
     
 
-    events.savevents(userid,eventid, (err, result) => {
+    events.savevents(uid,eventid, (err, result) => {
+
+        if (err) {
+            console.log(err)
+            res.status(500).send()
+        }
+
+        else {
+            res.status(201).send(result)
+        }
+    })
+
+})
+
+
+app.get('/saveevents/:uid', (req, res) => {
+    var uid = req.params.uid;
+
+    events.getusersave(uid, (err, result) => {
+        if (err) {
+            console.log(err);
+            res.status(500).send();
+        } else {
+            res.status(200).json(result);
+        }
+    });
+});
+
+app.delete('/delevent/:uid', (req, res) => {
+    var uid = req.params.uid;
+    var eventid = req.body.eventid
+
+    events.deletesaveEvent(eventid, uid, (err, result) => {
 
         if (err) {
             console.log(err)
