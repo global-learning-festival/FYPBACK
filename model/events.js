@@ -202,6 +202,59 @@ const events = {
             });
     },
 
+
+            savevents: function (uid, eventid, callback) {
+                return query(`INSERT INTO savedevent (uid, eventid) VALUES ($1, $2) RETURNING*`, [uid, eventid]).then((result,err) =>{
+        
+                    if (err) {
+                        callback(err, null);
+                        console.log(err)
+                        return;
+                    }
+                    else  {
+                        return callback(null, result);
+                    } 
+        
+                });
+            },
+            getusersave: function( uid, callback) {
+                return query(`SELECT e.eventid, e.title, e.image_banner,
+                TO_CHAR(e.time_start, 'YYYY-MM-DD HH24:MI:SS') AS "time_start",
+                TO_CHAR(e.time_end, 'YYYY-MM-DD HH24:MI:SS') AS "time_end",
+                e.location, e.keynote_speaker, e.description, e.survey_link
+            FROM events e
+            JOIN savedevent s ON e.eventid = s.eventid
+            WHERE s.uid = $1; `, [uid]).then((result,err) =>{
+            
+                    if (err) {
+                        callback(err, null);
+                        return;
+                    }
+                    else  {
+                        return callback(null, result);
+                    } 
+                    
+                });
+            },
+            deletesaveEvent: function (eventid, uid, callback) {
+                return query(`DELETE FROM savedevent
+                WHERE eventid = $1 AND uid = $2;`,
+                    [eventid, uid])
+                    .then((result, err) => {
+        
+                        if (err) {
+                            callback(err, null);
+                            return;
+                        }
+                        else {
+                            return callback(null, result);
+                        }
+        
+                    });
+            },
+            
+        
+            
 }
 
 module.exports = events;
