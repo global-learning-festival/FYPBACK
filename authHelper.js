@@ -19,7 +19,7 @@ const Redirect = async (code) => {
 
     const tokenUrl = `https://www.linkedin.com/oauth/v2/accessToken?${qs.stringify(payload)}`;
 
-    const response = await axios.post(tokenUrl, qs.stringify(payload), {
+    const response = await axios.post(tokenUrl, null, {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
