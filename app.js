@@ -476,13 +476,13 @@ app.delete('/delmarker/:id', (req, res) => {
 })
 
 
-app.post('/adduser', (req, res) => {
+app.post('/addadmin', (req, res) => {
 
     var username = req.body.username
     var password = req.body.password
     var type = req.body.type
 
-    User.addUser(username, password, type, (err, result) => {
+    User.addadmin(username, password, type, (err, result) => {
 
         if (err) {
             console.log(err)
@@ -528,6 +528,67 @@ app.get('/users', (req, res) => {
         else {
             console.log(result)
             res.status(200).send(result.rows)
+        }
+    })
+
+})
+
+
+app.post('/adduser', (req, res) => {
+
+    var first_name = req.body.first_name
+    var last_name = req.body.last_name
+    var company = req.body.company
+    var uid = req.body.uid
+    
+
+    User.addUser(first_name, last_name, company, uid, (err, result) => {
+
+        if (err) {
+            console.log(err)
+            res.status(500).send()
+        }
+
+        else {
+            res.status(201).send(result)
+        }
+    })
+
+})
+
+
+
+
+app.get('/useruid/:uid', (req, res) => {
+    var uid = req.params.uid;
+
+    User.getUserByUid(uid, (err, result) => {
+        if (err) {
+            console.log(err);
+            res.status(500).send();
+        } else {
+            res.status(200).json(result);
+        }
+    });
+});
+
+
+app.post('/saveevent', (req, res) => {
+
+    var userid = req.body.userid
+    var eventid = req.body.eventid
+ 
+    
+
+    events.savevents(userid,eventid, (err, result) => {
+
+        if (err) {
+            console.log(err)
+            res.status(500).send()
+        }
+
+        else {
+            res.status(201).send(result)
         }
     })
 
