@@ -6,7 +6,7 @@ const { query } = require("../db")
 const login = {
    
     verify: function(username, password, callback) {
-        return query(`select * from role where username = $1 and password = $2`, [username,password]).then((result,err) =>{
+        return query(`select * from userinfo where username = $1 and password = $2`, [username,password]).then((result,err) =>{
     
             if (err) {
                 callback(err, null);
