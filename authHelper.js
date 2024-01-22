@@ -7,7 +7,7 @@ const Authorization = () => {
   return encodeURI(authUrl);
 };  
 
-const Redirect = async (code) => {
+const Redirect = async (code, retryCount = 0) => {
   try {
     const payload = {
       client_id: process.env.CLIENT_ID,
@@ -25,13 +25,53 @@ const Redirect = async (code) => {
       },
     });
 
-    
-    // Process the response as needed (e.g., save the access token)
+    // Request user profile data from LinkedIn
+    const profileUrl = 'https://api.linkedin.com/v2/userinfo';
+    const profileResponse = await axios.get(profileUrl, {
+      headers: {
+        Authorization: `Bearer ${response.data.access_token}`,
+      },
+    });
 
-    return { success: true, data: response.data };
+    // Extract relevant user information
+    const { localizedFirstName, localizedLastName, emailAddress } = profileResponse.data;
+
+    // Return success response with user data
+    return {
+      success: true,
+      data: {
+        access_token: response.data.access_token,
+        user: {
+          firstName: localizedFirstName,
+          lastName: localizedLastName,
+          email: emailAddress,
+        },
+      },
+    };
   } catch (error) {
-    console.error('Error while exchanging code for access token:', error);
-    return { success: false, error: error.message };
+    if (
+      (error.code === 'ETIMEDOUT' || error.code === 'ENETUNREACH') &&
+      retryCount < 3
+    ) {
+      // Retry the request after a short delay (e.g., 1000 milliseconds)
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      return Redirect(code, retryCount + 1);
+    } else {
+      console.error('Error while exchanging code for access token:', error);
+
+      // Check for specific error conditions
+      if (error.response && error.response.data) {
+        const { error: errorCode, error_description: errorDescription } =
+          error.response.data;
+
+        if (errorCode === 'invalid_request') {
+          // Handle the specific 'invalid_request' error
+          console.error('Invalid request error:', errorDescription);
+        }
+      }
+
+      return { success: false, error: error.message };
+    }
   }
 };
 
@@ -39,4 +79,3 @@ module.exports = {
   Authorization,  
   Redirect,
 };
-  
