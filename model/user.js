@@ -57,7 +57,7 @@ const User = {
                 }
             });
     },
-       deleteUser: function(roleid, callback) {
+    deleteUser: function(roleid, callback) {
         return query(`DELETE FROM role WHERE roleid = $1;`, [roleid]).then((result,err) =>{
     
             if (err) {
@@ -113,6 +113,20 @@ getUsers: function(callback) {
 
 
 
+addManager: function (username, password, type, callback) {
+    return query(`INSERT INTO role (username, password, type) VALUES ($1, $2, $3) RETURNING*`, [username, password, type]).then((result,err) =>{
+
+        if (err) {
+            callback(err, null);
+            console.log(err)
+            return;
+        }
+        else  {
+            return callback(result,null);
+        } 
+
+    });
+},
 
 }
 

@@ -6,10 +6,15 @@ const map = require('./model/map')
 const events = require('./model/events');
 const importantInformation = require('./model/importantInfo');
 const User = require('./model/user');
+const login = require('./model/login')
 const cors = require('cors');
+const auth = require('./controller/authController')
 const app = express();
 const { hashSync } = require('bcrypt')
 const path = require('path');
+const bcrypt = require('bcrypt');
+const config = require('dotenv').config();
+const jwt = require('jsonwebtoken');
 
 // Set up multer storage
 const multer = require('multer');
@@ -497,25 +502,81 @@ app.post('/addadmin', (req, res) => {
 })
 
 app.post('/login', (req, res) => {
+    let username = req.body.username;
+    let password = req.body.password;
+    let message = 'Credentials are not valid.';
 
-    var username = req.body.username
-    var password = req.body.password
-    
+    try {
+        login.verify(username, function(error, results) {
+            console.log("resultlength",results.length)
 
-    User.addUser(username, password, (err, result) => {
+            if (error) {
+                let message = 'Credentials are not valid.';
+                return res.status(500).json({ message: message });
 
-        if (err) {
-            console.log(err)
-            res.status(500).send()
-        }
+            } else {
+                if (results != null) {
+                    if ((password == null) || (results == null)) {
+                        return res.status(500).json({ message: 'Login failed' });
+                    }
+                    if (bcrypt.compareSync(password, results.password) == true) {
 
-        else {
-            res.status(201).send(result)
-        }
-    })
+                        let data = {
+                            user_id: results.roleid,
+                            role_name: results.type,
+                            token: jwt.sign({ id: results.roleid,role:results.type}, process.env.JWTKEY, {
+                                expiresIn: 36000 //Expires in 10h
+                            })
+                        }; //End of data variable setup
+
+                        return res.status(200).json(data);
+                    } else {
+                        return res.status(500).json({ message: 'Login has failed.' });
+                    } //End of passowrd comparison with the retrieved decoded password.
+                } //End of checking if there are returned SQL results
+
+            }
+
+        })
+
+    } catch (error) {
+        return res.status(500).json({ message: message });
+    } //end of try
+
+
 
 })
+app.post('/register', (req, res) => {
 
+    console.log('processRegister running.');
+    let username = req.body.username;
+    let password = req.body.password;
+    let type = req.body.type;
+
+    bcrypt.hash(password, 10, async(err, hash) => {
+        if (err) {
+            console.log('Error on hashing password');
+            return res.status(500).json({ statusMessage: 'Unable to complete registration' });
+        } else {
+            
+                results = User.addManager(username, hash, type, function(results, error){
+                  if (results!=null){
+                    console.log(results);
+                    return res.status(200).json({ statusMessage: 'Completed registration.' });
+                  }
+                  if (error) {
+                    console.log('processRegister method : callback error block section is running.');
+                    console.log(error, '==================================================================');
+                    return res.status(500).json({ statusMessage: 'Unable to complete registration' });
+                }
+                });//End of anonymous callback function
+     
+          
+        }
+    });
+
+
+})
 app.get('/users', (req, res) => {
 
     User.getUsers((err, result) => {
@@ -643,6 +704,36 @@ app.delete('/delevent/:uid', (req, res) => {
 
 
 
+app.get('/testlogin', (req, res, next) => {
+    //If the token is valid, the logic extracts the user id and the role information.
+    //If the role is not user, then response 403 UnAuthorized
+    //The user id information is inserted into the request.body.userId
+        console.log('http header - user ', req.headers['user']);
+        if (typeof req.headers.authorization !== "undefined") {
+            // Retrieve the authorization header and parse out the
+            // JWT using the split function
+            let token = req.headers.authorization.split(' ')[1];
+            //console.log('Check for received token from frontend : \n');
+            //console.log(token);
+            jwt.verify(token, process.env.JWTKey, (err, data) => {
+                console.log('data extracted from token \n',data);
+                if (err) {
+                    console.log(err)
+                    return res.status(200).json({ message: 'Unauthorized access' });
+                }   
+                else {
+                    req.body.userId = data.id;
+                    req.body.role = data.role;
+                    next();
+                }
+            })
+  
+      }else{
+        res.status(403).send({ message: 'Unauthorized access' });
+
+      }
+    } //End of checkForValidUserRoleUser
+)
 
 
 
