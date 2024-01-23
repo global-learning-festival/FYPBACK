@@ -5,10 +5,11 @@ require('dotenv').config();
 const Authorization = () => {
   const authUrl = `https://www.linkedin.com/oauth/v2/authorization?client_id=${process.env.CLIENT_ID}&response_type=code&scope=${process.env.SCOPE}&redirect_uri=${process.env.REDIRECT_URI}`;
   return encodeURI(authUrl);
-};  
+};
 
 const Redirect = async (code, retryCount = 0) => {
   try {
+    // Exchange authorization code for an access token
     const payload = {
       client_id: process.env.CLIENT_ID,
       client_secret: process.env.CLIENT_SECRET,
@@ -17,24 +18,27 @@ const Redirect = async (code, retryCount = 0) => {
       code: code,
     };
 
-    const tokenUrl = `https://www.linkedin.com/oauth/v2/accessToken?${qs.stringify(payload)}`;
-
+    const tokenUrl = `https://www.linkedin.com/oauth/v2/accessToken`;
     const response = await axios.post(tokenUrl, qs.stringify(payload), {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
     });
 
-    // Request user profile data from LinkedIn
-    const profileUrl = 'https://api.linkedin.com/v2/userinfo';
-    const profileResponse = await axios.get(profileUrl, {
+    // Retrieve user information using the obtained access token
+    const userInfoUrl = 'https://api.linkedin.com/v2/userinfo';
+    const userInfoResponse = await axios.get(userInfoUrl, {
       headers: {
         Authorization: `Bearer ${response.data.access_token}`,
       },
     });
 
     // Extract relevant user information
-    const { localizedFirstName, localizedLastName, emailAddress } = profileResponse.data;
+    const {
+      name,
+      email,
+      picture,
+    } = userInfoResponse.data;
 
     // Return success response with user data
     return {
@@ -42,9 +46,9 @@ const Redirect = async (code, retryCount = 0) => {
       data: {
         access_token: response.data.access_token,
         user: {
-          firstName: localizedFirstName,
-          lastName: localizedLastName,
-          email: emailAddress,
+          name: name,
+          email: email,
+          profilePicture: picture,
         },
       },
     };
@@ -76,6 +80,6 @@ const Redirect = async (code, retryCount = 0) => {
 };
 
 module.exports = {
-  Authorization,  
+  Authorization,
   Redirect,
 };
