@@ -532,7 +532,22 @@ app.get('/users', (req, res) => {
     })
 
 })
+app.get('/roles', (req, res) => {
 
+    User.getAdmin((err, result) => {
+
+        if (err) {
+            console.log(err)
+            res.status(500).send()
+        }
+
+        else {
+            console.log(result)
+            res.status(200).send(result.rows)
+        }
+    })
+
+})
 
 app.post('/adduser', (req, res) => {
 
