@@ -1,12 +1,12 @@
 require('dotenv').config();
 const res = require('express/lib/response');
-const { query } = require("../db")
+const { query } = require("../database")
 
 
 const login = {
    
-    verify: function(username, password, callback) {
-        return query(`select * from userinfo where username = $1 and password = $2`, [username,password]).then((result,err) =>{
+    verify: function(username, callback) {
+        return query(`select * from role where username = $1`, [username]).then((result,err) =>{
     
             if (err) {
                 callback(err, null);
@@ -19,7 +19,8 @@ const login = {
                console.log("result:",result);
 
                 const user = result.rows[0];
-                
+                console.log("resultlength",user)
+
                 return callback(null, user);
                
             }
