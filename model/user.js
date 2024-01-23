@@ -20,8 +20,8 @@ const User = {
         });
     },
 
-    getUsers: function(callback) {
-        return query(`SELECT roleid, username, password, type FROM role;`).then((result, err) => {
+    getAdmin: function(callback) {
+        return query(`SELECT username, type FROM role;`).then((result, err) => {
             if (err) {
                 console.error('Error fetching users:', err);
                 callback(err, null);
@@ -97,6 +97,21 @@ getUserByUid: function(uid, callback) {
             callback(err, null);
         });
 },
+getUsers: function(callback) {
+    return query(`SELECT first_name , last_name , type  FROM users`)
+    .then((result,err) =>{
+        if (err) {
+            callback(err, null);
+            return;
+        }
+        else  {
+            return callback(null, result);
+        } 
+        
+    });
+},
+
+
 
 
 }
