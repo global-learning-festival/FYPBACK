@@ -88,7 +88,7 @@ const announcement = {
 
     getAnnouncementsByEventId: function (eventid, callback) {
     return query(
-        `SELECT announcementid, eventid, title, description, TO_CHAR(created_at , 'YYYY-MM-DD HH24:MI:SS' ) AS "created_on", TO_CHAR(updated_at , 'YYYY-MM-DD HH24:MI:SS' ) AS "updated_on" FROM announcements WHERE eventid = $1 ORDER BY updated_at DESC;`,
+        `SELECT announcementid, eventid, title, description, TO_CHAR(created_at, 'YYYY-MM-DD HH24:MI:SS') AS "created_on", TO_CHAR(updated_at, 'YYYY-MM-DD HH24:MI:SS') AS "updated_on" FROM announcements WHERE eventid = $1 ORDER BY updated_at DESC;`,
         [eventid]
     ).then((result, err) => {
         if (err) {
