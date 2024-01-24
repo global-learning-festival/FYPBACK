@@ -65,7 +65,7 @@ const events = {
                         TO_CHAR(time_start, 'YYYY-MM-DD HH24:MI:SS') AS "time_start",
                         TO_CHAR(time_end, 'YYYY-MM-DD HH24:MI:SS') AS "time_end",
                         location, keynote_speaker, description, survey_link
-                            FROM events`)
+                            FROM events ORDER BY eventid ASC;`)
             .then((result) => {
                 callback(null, result);
             })

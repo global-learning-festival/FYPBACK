@@ -35,7 +35,7 @@ const announcement = {
         });
     },
     getAnnouncementById: function(announcementid, callback) {
-        return query(`SELECT announcementid,eventid, title, description, image, TO_CHAR(created_at, 'DD/MM/YYYY, HH12:MIam') AS "created_on", TO_CHAR(updated_at, 'DD/MM/YYYY, HH12:MIam') AS "updated_on" FROM announcements WHERE announcementid = $1;`, [announcementid]).then((result,err) =>{
+        return query(`SELECT announcementid,eventid, title, description, image, TO_CHAR(created_at, 'YYYY-MM-DD HH24:MI:SS') AS "created_on", TO_CHAR(updated_at, 'YYYY-MM-DD HH24:MI:SS') AS "updated_on" FROM announcements WHERE announcementid = $1;`, [announcementid]).then((result,err) =>{
     
             if (err) {
                 callback(err, null);
