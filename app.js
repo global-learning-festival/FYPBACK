@@ -704,7 +704,7 @@ app.delete('/delevent/:uid', (req, res) => {
 
 
 
-app.get('/testlogin', (req, res, next) => {
+app.get('/validateLogin', (req, res, next) => {
     //If the token is valid, the logic extracts the user id and the role information.
     //If the role is not user, then response 403 UnAuthorized
     //The user id information is inserted into the request.body.userId
