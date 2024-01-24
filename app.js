@@ -701,7 +701,35 @@ app.delete('/delevent/:uid', (req, res) => {
     })
 
 })
+ app.get('/user/:userid', (req, res) => {
+    const userid = req.params.userid;
+    User.getUserById(userid,  (err, result) => {
 
+        if (err) {
+            console.log(err)
+            res.status(500).send()
+        }
+
+        else {
+            res.status(200).send(result)
+        }
+    })
+
+})
+app.put('/user/:userid', (req, res) => {
+    var userid = req.params.userid;
+    var company = req.body.company
+    var linkedinurl = req.body.linkedinurl
+  
+    User.updateUsers(userid, company, linkedinurl, (err, result) => {
+      if (err) {
+        console.error(err);
+        res.status(500).send();
+      } else {
+        res.status(200).send(result);
+      }
+    });
+});
 
 
 app.get('/validateLogin', (req, res, next) => {
