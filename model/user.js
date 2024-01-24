@@ -110,8 +110,30 @@ getUsers: function(callback) {
         
     });
 },
+getUserById: function(userid, callback) {
+    return query(`SELECT first_name, last_name, company, linkedinurl FROM users WHERE userid = $1`
+    , [userid])
+        .then(result => {
+            // Return the user if found, otherwise return null
+            return callback(null, result.rows.length > 0 ? result.rows[0] : null);
+        })
+        .catch(err => {
+            console.error('Error retrieving user by ID:', err);
+            callback(err, null);
+        });
+},
+updateUsers: function( userid, company, linkedinurl,  callback) {
+    return query(`UPDATE users SET company= $2, linkedinurl = $3 WHERE userid = $1 RETURNING *`, [ userid, company, linkedinurl])
 
-
+        .then((result, err) => {
+            if (err) {
+                callback(err, null);
+                console.log(err);
+            } else {
+                callback(null, result);
+            }
+        });
+},
 
 addManager: function (username, password, type, callback) {
     return query(`INSERT INTO role (username, password, type) VALUES ($1, $2, $3) RETURNING*`, [username, password, type]).then((result,err) =>{
