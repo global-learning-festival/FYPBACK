@@ -453,8 +453,9 @@ app.put('/marker/:id', (req, res) => {
     var location_name = req.body.location_name
     var category = req.body.category
     var description = req.body.description
+    var image = req.body.publicId
   
-    map.updatemarker(mapid, location_name, category, description, (err, result) => {
+    map.updatemarker(mapid, location_name, category, description, image, (err, result) => {
       if (err) {
         console.error(err);
         res.status(500).send();
