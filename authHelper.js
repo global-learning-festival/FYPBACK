@@ -1,11 +1,14 @@
 const axios = require('axios');
 const qs = require('querystring');
 require('dotenv').config();
+const User = require('./model/user')
+const { query } = require("./database")
 
 const Authorization = () => {
   const authUrl = `https://www.linkedin.com/oauth/v2/authorization?client_id=${process.env.CLIENT_ID}&response_type=code&scope=${process.env.SCOPE}&redirect_uri=${process.env.REDIRECT_URI}`;
   return encodeURI(authUrl);
 };
+
 
 const Redirect = async (code, retryCount = 0) => {
   try {
@@ -36,9 +39,34 @@ const Redirect = async (code, retryCount = 0) => {
     // Extract relevant user information
     const {
       name,
-      email,
-      picture,
+      sub,
     } = userInfoResponse.data;
+
+    const [first_name, last_name] = name.split(' ');
+    const company = '';
+    const uid = sub;
+
+    User.addUser (first_name, last_name, company, uid, async (err,result) => {
+      try{
+        // Check if the user with the given uid already exists
+        const userExistsResult = await query('SELECT * FROM users WHERE uid = $1', [uid]);
+
+        if (userExistsResult.rows.length > 0) {
+          console.log('User already exists. Retrieving information:', response.data);
+        } else {
+          console.log('User information stored successfully:', response.data);
+      // Check if the user with the given uid already exists
+      const newUserResult = await query(
+        'INSERT INTO users (first_name, last_name, company, uid) VALUES ($1, $2, $3, $4) RETURNING *',
+        [first_name, last_name, company, uid]
+      );
+
+          console.log('New user added successfully:', newUserResult.rows[0]);
+        }
+      } catch (error) {
+        console.error('Error handling user data:', error);
+      }
+    });
 
     // Return success response with user data
     return {
@@ -47,8 +75,7 @@ const Redirect = async (code, retryCount = 0) => {
         access_token: response.data.access_token,
         user: {
           name: name,
-          email: email,
-          profilePicture: picture,
+          uid: sub,
         },
       },
     };
