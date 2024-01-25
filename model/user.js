@@ -70,8 +70,8 @@ const User = {
             
         });
     },
-    addUser: function (first_name, last_name, company, uid, callback) {
-        return query(`INSERT INTO users (first_name, last_name, company, uid) VALUES ($1, $2, $3, $4) RETURNING*`, [first_name, last_name, company, uid]).then((result,err) =>{
+    addUser: function (first_name, last_name, company, uid, type ,callback) {
+        return query(`INSERT INTO users (first_name, last_name, company, uid,type) VALUES ($1, $2, $3, $4, $5) RETURNING*`, [first_name, last_name, company, uid,type]).then((result,err) =>{
 
             if (err) {
                 callback(err, null);
