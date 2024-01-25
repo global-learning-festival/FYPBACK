@@ -633,9 +633,10 @@ app.post('/adduser', (req, res) => {
     var last_name = req.body.last_name
     var company = req.body.company
     var uid = req.body.uid
+    var type = req.body.type
     
 
-    User.addUser(first_name, last_name, company, uid, (err, result) => {
+    User.addUser(first_name, last_name, company, uid, type,  (err, result) => {
 
         if (err) {
             console.log(err)
