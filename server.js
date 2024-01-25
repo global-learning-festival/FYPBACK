@@ -2,7 +2,9 @@
 const cluster = require('cluster');
 const express = require('express');
 const app = require('./app');
-const { Authorization, Redirect } = require("./authHelper");
+const axios = require('axios');
+const {Authorization, Redirect } = require('./authHelper')
+
 require('dotenv').config('.env');
 
 const port = process.env.PORT || 5000;
@@ -34,4 +36,36 @@ if (cluster.isMaster) {
   app.get('/api/linkedin/redirect', async (req, res) => {
       return res.json(Redirect(req.query.code));
   });
+
+  app.post('/adduser', (req, res) => {
+    var first_name = req.body.first_name;
+    var last_name = req.body.last_name;
+    var company = req.body.company;
+    var uid = req.body.uid;
+ 
+    // Check if the user exists in the database
+    User.getUserByUid(uid, (err, result) => {
+       if (err) {
+          console.error(err);
+          res.status(500).send('Error checking user existence');
+       } else {
+          if (result.length > 0) {
+             // User already exists, you can handle this case accordingly
+             console.log('User already exists. Retrieving information:', result);
+             res.status(200).send('User already exists');
+          } else {
+             // User does not exist, insert into the database
+             User.addUser(first_name, last_name, company, uid, (err, result) => {
+                if (err) {
+                   console.error(err);
+                   res.status(500).send('Error inserting user data');
+                } else {
+                   console.log('User information stored successfully:', result);
+                   res.status(201).send('User information stored successfully');
+                }
+             });
+          }
+       }
+    });
+ });
 }

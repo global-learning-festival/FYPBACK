@@ -66,7 +66,7 @@ const User = {
             }
             else  {
                 return callback(null, result);
-            } 
+            }   
             
         });
     },
