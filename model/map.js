@@ -53,10 +53,10 @@ const map = {
         });
     },
 
-    updatemarker: function (mapid, location_name, category, description, callback) {
+    updatemarker: function (mapid, location_name, category, description, image ,callback) {
         return query(
-          'UPDATE marker SET location_name = $2, category = $3, description = $4  WHERE mapid = $1 RETURNING *',
-          [mapid, location_name, category, description]
+          'UPDATE marker SET location_name = $2, category = $3, description = $4 , image = $5 WHERE mapid = $1 RETURNING *',
+          [mapid, location_name, category, description, image]
         )
           .then((result, err) => {
             if (err) {
