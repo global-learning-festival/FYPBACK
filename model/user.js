@@ -97,6 +97,7 @@ getUserByUid: function(uid, callback) {
             callback(err, null);
         });
 },
+// for admin list
 getUsers: function(callback) {
     return query(`SELECT first_name , last_name , type  FROM users`)
     .then((result,err) =>{
@@ -110,6 +111,21 @@ getUsers: function(callback) {
         
     });
 },
+//for user side
+getUserList: function(callback) {
+    return query(`SELECT first_name , last_name , company ,linkedinurl  FROM users`)
+    .then((result,err) =>{
+        if (err) {
+            callback(err, null);
+            return;
+        }
+        else  {
+            return callback(null, result);
+        } 
+        
+    });
+},
+
 getUserById: function(userid, callback) {
     return query(`SELECT first_name, last_name, company, linkedinurl FROM users WHERE userid = $1`
     , [userid])
