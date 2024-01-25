@@ -737,9 +737,10 @@ app.delete('/delevent/:uid', (req, res) => {
 app.put('/user/:userid', (req, res) => {
     var userid = req.params.userid;
     var company = req.body.company
+    var jobtitle = req.body.jobtitle
     var linkedinurl = req.body.linkedinurl
   
-    User.updateUsers(userid, company, linkedinurl, (err, result) => {
+    User.updateUsers(userid, company, jobtitle, linkedinurl, (err, result) => {
       if (err) {
         console.error(err);
         res.status(500).send();
