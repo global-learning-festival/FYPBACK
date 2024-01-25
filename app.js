@@ -15,6 +15,7 @@ const path = require('path');
 const bcrypt = require('bcrypt');
 const config = require('dotenv').config();
 const jwt = require('jsonwebtoken');
+const Redirect = require('./authHelper')
 
 // Set up multer storage
 const multer = require('multer');
@@ -593,22 +594,6 @@ app.get('/users', (req, res) => {
     })
 
 })
-app.get('/userlist', (req, res) => {
-
-    User.getUserList((err, result) => {
-
-        if (err) {
-            console.log(err)
-            res.status(500).send()
-        }
-
-        else {
-            console.log(result)
-            res.status(200).send(result.rows)
-        }
-    })
-
-})
 app.get('/roles', (req, res) => {
 
     User.getAdmin((err, result) => {
@@ -780,8 +765,4 @@ app.get('/validateLogin', (req, res, next) => {
 )
 
 
-
-
-
 module.exports = app;
-
