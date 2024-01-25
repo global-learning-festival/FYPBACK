@@ -113,7 +113,7 @@ getUsers: function(callback) {
 },
 //for user side
 getUserList: function(callback) {
-    return query(`SELECT first_name , last_name , company ,linkedinurl  FROM users`)
+    return query(`SELECT first_name , last_name , company ,linkedinurl, jobtitle  FROM users`)
     .then((result,err) =>{
         if (err) {
             callback(err, null);
@@ -127,7 +127,7 @@ getUserList: function(callback) {
 },
 
 getUserById: function(userid, callback) {
-    return query(`SELECT first_name, last_name, company, linkedinurl FROM users WHERE userid = $1`
+    return query(`SELECT first_name, last_name, company, linkedinurl, jobtitle FROM users WHERE userid = $1`
     , [userid])
         .then(result => {
             // Return the user if found, otherwise return null
@@ -138,8 +138,8 @@ getUserById: function(userid, callback) {
             callback(err, null);
         });
 },
-updateUsers: function( userid, company, linkedinurl,  callback) {
-    return query(`UPDATE users SET company= $2, linkedinurl = $3 WHERE userid = $1 RETURNING *`, [ userid, company, linkedinurl])
+updateUsers: function( userid, company,jobtitle, linkedinurl,  callback) {
+    return query(`UPDATE users SET company= $2, jobtitle= $3, linkedinurl = $4  WHERE userid = $1 RETURNING *`, [ userid, company, jobtitle, linkedinurl])
 
         .then((result, err) => {
             if (err) {
