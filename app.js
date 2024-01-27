@@ -783,8 +783,16 @@ app.put('/user/:userid', (req, res) => {
     });
 });
 
-
-
+app.get('/mostsavedEvent', (req, res) => {
+    events.getmostsavedEvent((err, result) => {
+        if (err) {
+            console.log(err);
+            res.status(500).send();
+        } else {
+            res.status(200).json(result);
+        }
+    });
+});
 
 
 module.exports = app;

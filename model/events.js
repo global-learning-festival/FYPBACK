@@ -252,8 +252,26 @@ const events = {
         
                     });
             },
+            getmostsavedEvent: function(callback) {
+                return query(`SELECT e.eventid, e.title, COUNT(s.savedid) as savedCount
+                FROM events e
+                JOIN savedevent s ON e.eventid = s.eventid
+                GROUP BY e.eventid
+                ORDER BY savedCount DESC
+                LIMIT 1;`,).then((result,err) =>{
             
-        
+                    if (err) {
+                        callback(err, null);
+                        return;
+                    }
+                    else  {
+                        return callback(null, result);
+                    } 
+                    
+                });
+            },
+
+            
             
 }
 
