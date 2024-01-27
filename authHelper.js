@@ -1,9 +1,9 @@
+//authHelper.js
 const express = require('express');
 const axios = require('axios');
 const qs = require('querystring');
 require('dotenv').config();
-const User = require('./model/user');
-const { query } = require("./database");
+const { URLSearchParams } = require('url');
 
 const app = express();  // Create an Express app
 
@@ -16,7 +16,7 @@ const Redirect = async (code, retryCount = 0, res) => {
   try {
     console.log('Starting Redirect function');
 
-    const payload = {
+    const payload = { 
       client_id: process.env.CLIENT_ID,
       client_secret: process.env.CLIENT_SECRET,
       redirect_uri: process.env.REDIRECT_URI,
@@ -84,16 +84,16 @@ const Redirect = async (code, retryCount = 0, res) => {
         return await Redirect(code, retryCount + 1, res);
       }
     } catch (error) {
-      console.error('Error handling user data:', error);
-    
-      if (res && res.status) {
+      console.error('Error in Redirect function:', error);
+      if (res) {
         return res.status(500).json({ error: 'Error during redirection' });
       } else {
+        // Handle the error as needed
         console.log('No response object available for redirection');
-        // Log the error or handle it as needed
       }
-      console.log('End of Redirect function 3');
+      console.log('End of Redirect function due to error');
     }
+
 
     // Return success response with user data
     return {
@@ -110,7 +110,7 @@ const Redirect = async (code, retryCount = 0, res) => {
   } catch (error) {
     if (
       (error.code === 'ETIMEDOUT' || error.code === 'ENETUNREACH') &&
-      retryCount < 3
+        retryCount < 3
     ) {
       // Retry the request after a short delay (e.g., 1000 milliseconds)
       await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -134,7 +134,7 @@ const Redirect = async (code, retryCount = 0, res) => {
   }
 };
 
-// Use the Redirect function with the express response object
+//Use the Redirect function with the express response object
 app.get('/api/linkedin/redirect', async (req, res) => {
   const code = req.query.code;
   await Redirect(code, 0, res);

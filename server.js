@@ -4,7 +4,9 @@ const express = require('express');
 const app = require('./app');
 const axios = require('axios');
 const {Authorization, Redirect } = require('./authHelper')
+const cors = require('cors');
 
+app.use(cors());
 require('dotenv').config('.env');
 
 const port = process.env.PORT || 5000;

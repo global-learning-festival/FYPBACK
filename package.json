@@ -32,7 +32,9 @@
     "passport-local": "^1.0.0",
     "path": "^0.12.7",
     "pg": "^8.11.3",
+    "pg-promise": "^11.5.4",
     "query-string": "^8.1.0",
+    "react-native": "^0.73.2",
     "socket.io-client": "^4.7.2"
   },
   "devDependencies": {
