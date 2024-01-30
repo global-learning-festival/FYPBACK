@@ -21,7 +21,7 @@ const importantInformation = {
     },
 
     getImportantInfomation: function (callback) {
-        return query(`SELECT infoid, title, subtitle, description FROM importantinfo`).then((result,err) =>{
+        return query(`SELECT infoid, title, subtitle, description, image FROM importantinfo`).then((result,err) =>{
     
             if (err) {
                 callback(err, null);
