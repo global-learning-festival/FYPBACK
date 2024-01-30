@@ -772,8 +772,9 @@ app.put('/user/:userid', (req, res) => {
     var company = req.body.company
     var jobtitle = req.body.jobtitle
     var linkedinurl = req.body.linkedinurl
+    var profile_pic = req.body.publicId
   
-    User.updateUsers(userid, company, jobtitle, linkedinurl, (err, result) => {
+    User.updateUsers(userid, company, jobtitle, linkedinurl, profile_pic, (err, result) => {
       if (err) {
         console.error(err);
         res.status(500).send();

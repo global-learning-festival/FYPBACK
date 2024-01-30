@@ -113,7 +113,7 @@ getUsers: function(callback) {
 },
 //for user side
 getUserList: function(callback) {
-    return query(`SELECT first_name , last_name , company ,linkedinurl, jobtitle  FROM users`)
+    return query(`SELECT first_name , last_name , company ,linkedinurl, jobtitle , profile_pic FROM users`)
     .then((result,err) =>{
         if (err) {
             callback(err, null);
@@ -127,7 +127,7 @@ getUserList: function(callback) {
 },
 
 getUserById: function(userid, callback) {
-    return query(`SELECT first_name, last_name, company, linkedinurl, jobtitle FROM users WHERE userid = $1`
+    return query(`SELECT userid, uid, first_name, last_name, company, linkedinurl, jobtitle FROM users WHERE userid = $1`
     , [userid])
         .then(result => {
             // Return the user if found, otherwise return null
@@ -137,19 +137,20 @@ getUserById: function(userid, callback) {
             console.error('Error retrieving user by ID:', err);
             callback(err, null);
         });
-},
-updateUsers: function( userid, company,jobtitle, linkedinurl,  callback) {
-    return query(`UPDATE users SET company= $2, jobtitle= $3, linkedinurl = $4  WHERE userid = $1 RETURNING *`, [ userid, company, jobtitle, linkedinurl])
-
-        .then((result, err) => {
-            if (err) {
-                callback(err, null);
-                console.log(err);
-            } else {
-                callback(null, result);
-            }
-        });
-},
+    },
+        updateUsers: function(userid, company, jobtitle, linkedinurl, profile_pic, callback) {
+            query(`UPDATE users SET company = $2, jobtitle = $3, linkedinurl = $4, profile_pic = $5 WHERE userid = $1 RETURNING *`, [userid, company, jobtitle, linkedinurl, profile_pic])
+                .then((result) => {
+                    // Handle the result here
+                    callback(null, result);
+                })
+                .catch((err) => {
+                    // Handle the error here
+                    console.error(err);
+                    callback(err, null);
+                });
+        },
+        
 
 addManager: function (username, password, type, callback) {
     return query(`INSERT INTO role (username, password, type) VALUES ($1, $2, $3) RETURNING*`, [username, password, type]).then((result,err) =>{
