@@ -123,7 +123,7 @@ const User = {
 
   getUserById: function (userid, callback) {
     return query(
-      `SELECT userid, uid, first_name, last_name, company, linkedinurl, jobtitle FROM users WHERE userid = $1`,
+      `SELECT userid, uid, first_name, last_name, company, linkedinurl, jobtitle , profile_pic FROM users WHERE userid = $1`,
       [userid]
     )
       .then((result) => {
