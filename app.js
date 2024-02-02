@@ -28,7 +28,7 @@ app.use(bodyParser.json());
 app.use((req, res, next) => {
     res.setHeader(
       "Access-Control-Allow-Origin",
-      "http:localhost:3001"
+      "https://adminilf.onrender.com"
     );
     res.setHeader(
       "Access-Control-Allow-Methods",
