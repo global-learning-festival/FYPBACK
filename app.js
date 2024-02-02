@@ -29,7 +29,7 @@ app.use(cors());
 app.use((req, res, next) => {
   res.setHeader(
     "Access-Control-Allow-Origin",
-    "http://localhost:3001"
+    "https://main--jade-brigadeiros-e6f0a2.netlify.app"
     );
   res.setHeader(
     "Access-Control-Allow-Methods",
