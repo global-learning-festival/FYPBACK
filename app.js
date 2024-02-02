@@ -24,10 +24,28 @@ const upload = multer({ storage: storage });
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use(cors());
-app.get(
-  "/validateLogin",
-  (req, res, next) => {
+app.use((req, res, next) => {
+    res.setHeader(
+      "Access-Control-Allow-Origin",
+      "https://adminifl.onrender.com"
+    );
+    res.setHeader(
+      "Access-Control-Allow-Methods",
+      "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS,CONNECT,TRACE"
+    );
+    res.setHeader(
+      "Access-Control-Allow-Headers",
+      "Content-Type, Authorization, X-Content-Type-Options, Accept, X-Requested-With, Origin, Access-Control-Request-Method, Access-Control-Request-Headers"
+    );
+    res.setHeader("Access-Control-Allow-Credentials", true);
+    res.setHeader("Access-Control-Allow-Private-Network", true);
+    //  Firefox caps this at 24 hours (86400 seconds). Chromium (starting in v76) caps at 2 hours (7200 seconds). The default value is 5 seconds.
+    res.setHeader("Access-Control-Max-Age", 7200);
+  
+    next();
+  });
+app.get('/validateLogin', (req, res, next) => {
+
     //If the token is valid, the logic extracts the user id and the role information.
     //If the role is not user, then response 403 UnAuthorized
     //The user id information is inserted into the request.body.userId
