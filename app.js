@@ -58,7 +58,7 @@ app.get(
       // JWT using the split function
       let token = req.headers.authorization.split(" ")[1];
       //console.log('Check for received token from frontend : \n');
-      //console.log(token);
+      console.log("key: "+process.env.JWTKey);
       jwt.verify(token, process.env.JWTKey, (err, data) => {
         console.log("data extracted from token \n", data);
         if (err) {
