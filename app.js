@@ -24,10 +24,15 @@ const upload = multer({ storage: storage });
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use(cors());
-app.get(
-  "/validateLogin",
-  (req, res, next) => {
+ 
+const corsOptions ={
+    origin:'http:localhost:3001', 
+    credentials:true,            //access-control-allow-credentials:true
+    optionSuccessStatus:200
+  }
+  app.use(cors(corsOptions));
+app.get('/validateLogin', (req, res, next) => {
+
     //If the token is valid, the logic extracts the user id and the role information.
     //If the role is not user, then response 403 UnAuthorized
     //The user id information is inserted into the request.body.userId
