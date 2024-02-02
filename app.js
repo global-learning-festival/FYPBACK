@@ -29,8 +29,8 @@ app.use(cors());
 app.use((req, res, next) => {
   res.setHeader(
     "Access-Control-Allow-Origin",
-    "https://admintestfrontilf.onrender.com"
-  );
+    "http://localhost:3001"
+    );
   res.setHeader(
     "Access-Control-Allow-Methods",
     "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS,CONNECT,TRACE"
