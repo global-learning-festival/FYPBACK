@@ -1,18 +1,23 @@
-import React, { useState, useEffect } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, CircleMarker, useMap, useLeaflet } from 'react-leaflet';
-import L from 'leaflet';
-import waterRefillIcon from '../assets/water-refill-icon.png';
-import 'leaflet/dist/leaflet.css';
+import React, { useState, useEffect } from "react";
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  Popup,
+  CircleMarker,
+  useMap,
+  useLeaflet,
+} from "react-leaflet";
+import L from "leaflet";
+import waterRefillIcon from "../assets/water-refill-icon.png";
+import "leaflet/dist/leaflet.css";
 import "leaflet-routing-machine/dist/leaflet-routing-machine.css";
-
 
 const MapComponent = (props) => {
   const [userLocation, setUserLocation] = useState(null);
   const [isRouting, setIsRouting] = useState(false);
   const position = [1.310411032362568, 103.77767848691333];
   const refill1 = [1.310411032362568, 103.77767848691333];
-
-
 
   const customIcon = L.icon({
     iconUrl: waterRefillIcon,
@@ -25,7 +30,6 @@ const MapComponent = (props) => {
     setIsRouting(!isRouting); // Toggle the routing state
   };
 
-
   useEffect(() => {
     // Use the Geolocation API to get the user's current location
     navigator.geolocation.getCurrentPosition((position) => {
@@ -36,7 +40,11 @@ const MapComponent = (props) => {
 
   return (
     <div id="map">
-      <MapContainer center={position} zoom={16} style={{ width: '100%', height: '400px' }}>
+      <MapContainer
+        center={position}
+        zoom={16}
+        style={{ width: "100%", height: "400px" }}
+      >
         <TileLayer
           url="https://maps-{s}.onemap.sg/v3/Default/{z}/{x}/{y}.png"
           attribution='Map data © <a href="https://www.onemap.sg/" target="_blank">OneMap</a'
@@ -48,19 +56,16 @@ const MapComponent = (props) => {
             <Popup>User's Location</Popup>
           </CircleMarker>
         )}
-         <Marker position={refill1} icon={customIcon}>
+        <Marker position={refill1} icon={customIcon}>
           <Popup>
-            <div id='divRefill1'>
-              <p id='Refill1P'>Water Refill #1</p>
-              <button id="RefillButton" onClick={handleRouteButtonClick} >
-                {isRouting ? 'Stop Routing' : 'Route to Water Refill 1'}
+            <div id="divRefill1">
+              <p id="Refill1P">Water Refill #1</p>
+              <button id="RefillButton" onClick={handleRouteButtonClick}>
+                {isRouting ? "Stop Routing" : "Route to Water Refill 1"}
               </button>
             </div>
           </Popup>
         </Marker>
-
-
-       
       </MapContainer>
     </div>
   );
