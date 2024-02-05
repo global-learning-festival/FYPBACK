@@ -197,7 +197,7 @@ const events = {
       const formattedEndTime = formatDateTime(time_end);
 
       return query(
-        "UPDATE events SET title = $2, image_banner = $3, time_start = TO_TIMESTAMP($4, 'YYYY-MM-DD HH24:MI:SS') AT TIME ZONE 'Asia/Singapore', time_end = TO_TIMESTAMP($5, 'YYYY-MM-DD HH24:MI:SS') AT TIME ZONE 'Asia/Singapore', location = $6, keynote_speaker = $7, description = $8, survey_link = $9 WHERE eventid = $1 RETURNING *",
+        "UPDATE events SET title = $2, image_banner = $3, time_start = TO_TIMESTAMP($4, 'YYYY-MM-DD HH24:MI:SS'), time_end = TO_TIMESTAMP($5, 'YYYY-MM-DD HH24:MI:SS') , location = $6, keynote_speaker = $7, description = $8, survey_link = $9 WHERE eventid = $1 RETURNING *",
         [
           eventid,
           title,
