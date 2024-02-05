@@ -50,8 +50,8 @@ const events = {
       return query(
         `
                 INSERT INTO events (title, image_banner, time_start, time_end, location, keynote_speaker, description, survey_link)
-                VALUES ($1, $2,TO_TIMESTAMP($3, 'YYYY-MM-DD HH24:MI:SS') AT TIME ZONE 'Asia/Singapore',
-                TO_TIMESTAMP($4, 'YYYY-MM-DD HH24:MI:SS') AT TIME ZONE 'Asia/Singapore', $5, $6, $7, $8)
+                VALUES ($1, $2,TO_TIMESTAMP($3, 'YYYY-MM-DD HH24:MI:SS'),
+                TO_TIMESTAMP($4, 'YYYY-MM-DD HH24:MI:SS') , $5, $6, $7, $8)
                 RETURNING *
             `,
         [
