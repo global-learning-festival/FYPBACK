@@ -1,6 +1,6 @@
 const express = require("express");
 const bodyParser = require("body-parser");
-const product = require("./model/product");
+
 const announcement = require("./model/announcement");
 const map = require("./model/map");
 const events = require("./model/events");
