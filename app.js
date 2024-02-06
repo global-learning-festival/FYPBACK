@@ -530,7 +530,7 @@ app.post("/login", (req, res) => {
               role_name: results.type,
               token: jwt.sign(
                 { id: results.roleid, role: results.type },
-                process.env.JWTKEY,
+                process.env.JWTKey,
                 {
                   expiresIn: 36000, //Expires in 10h
                 }
