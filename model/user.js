@@ -3,21 +3,7 @@ const res = require("express/lib/response");
 const { query } = require("../database");
 
 const User = {
-  addadmin: function (username, password, type, callback) {
-    return query(
-      `INSERT INTO role (username, password, type) VALUES ($1, $2, $3) RETURNING*`,
-      [username, password, type]
-    ).then((result, err) => {
-      if (err) {
-        callback(err, null);
-        console.log(err);
-        return;
-      } else {
-        return callback(null, result);
-      }
-    });
-  },
-
+  //Gets all admin/event manager users
   getAdmin: function (callback) {
     return query(`SELECT username, type FROM role;`).then((result, err) => {
       if (err) {
@@ -30,6 +16,7 @@ const User = {
       }
     });
   },
+  //Gets all users sorted per role type
   getUserByType: function (type, callback) {
     return query(
       `SELECT roleid, username, password, type FROM announcements WHERE type = $1;`,
@@ -43,19 +30,21 @@ const User = {
       }
     });
   },
-  updateUser: function (username, password, type, roleid, callback) {
-    return query(
-      `UPDATE role SET username = $1, password = $2, type = $3 WHERE roleid = $4 RETURNING *`,
-      [username, password, type, roleid]
-    ).then((result, err) => {
-      if (err) {
-        callback(err, null);
-        console.log(err);
-      } else {
-        callback(null, result);
-      }
-    });
-  },
+  //Updates user information
+  // updateUser: function (username, password, type, roleid, callback) {
+  //   return query(
+  //     `UPDATE role SET username = $1, password = $2, type = $3 WHERE roleid = $4 RETURNING *`,
+  //     [username, password, type, roleid]
+  //   ).then((result, err) => {
+  //     if (err) {
+  //       callback(err, null);
+  //       console.log(err);
+  //     } else {
+  //       callback(null, result);
+  //     }
+  //   });
+  // },
+  //Removes user from db
   deleteUser: function (roleid, callback) {
     return query(`DELETE FROM role WHERE roleid = $1;`, [roleid]).then(
       (result, err) => {
@@ -68,6 +57,7 @@ const User = {
       }
     );
   },
+  //Adds new user into db
   addUser: function (first_name, last_name, company, uid, type, callback) {
     return query(
       `INSERT INTO users (first_name, last_name, company, uid,type) VALUES ($1, $2, $3, $4, $5) RETURNING*`,
@@ -82,6 +72,7 @@ const User = {
       }
     });
   },
+  //Adds a user connecting with Linkedin
   addLinkedinUser: function (
     first_name,
     last_name,
@@ -104,7 +95,7 @@ const User = {
       }
     });
   },
-  // for admin list
+  //Gets all users from admin and regular users for admin frontend
   getUsers: function (callback) {
     return query(`SELECT first_name , last_name , type  FROM users`).then(
       (result, err) => {
@@ -117,7 +108,7 @@ const User = {
       }
     );
   },
-  //for user side
+  //Gets all users at event on the user facing frontend
   getUserList: function (callback) {
     return query(
       `SELECT first_name , last_name , company ,linkedinurl, jobtitle , profile_pic FROM users`
@@ -130,7 +121,7 @@ const User = {
       }
     });
   },
-
+  //Gets one specific user by userid
   getUserById: function (userid, callback) {
     return query(
       `SELECT userid, uid, first_name, last_name, company, linkedinurl, jobtitle , profile_pic FROM users WHERE userid = $1`,
@@ -145,6 +136,7 @@ const User = {
         callback(err, null);
       });
   },
+  //Gets one specific user by linkedinn userid
   getUserByUid: function (uid, callback) {
     return query(
       `SELECT userid, uid, first_name, last_name, company, linkedinurl, jobtitle , profile_pic 
@@ -161,6 +153,7 @@ const User = {
         callback(err, null);
       });
   },
+  //Updates a user by userid
   updateUsers: function (
     uid,
     company,
@@ -183,7 +176,7 @@ const User = {
         callback(err, null);
       });
   },
-
+  //Part of registration of admin/event managers
   addManager: function (username, password, type, callback) {
     return query(
       `INSERT INTO role (username, password, type) VALUES ($1, $2, $3) RETURNING*`,

@@ -4,7 +4,7 @@ const { query } = require("../database")
 
 
 const importantInformation = {
-   
+   //Adds an entry for important information
     addImportantInfomation: function (title, subtitle, description, image, callback) {
         return query(`INSERT INTO importantinfo (title, subtitle, description, image) VALUES ($1, $2, $3,$4) RETURNING*`, [title, subtitle, description, image]).then((result,err) =>{
     
@@ -19,7 +19,7 @@ const importantInformation = {
             
         });
     },
-
+    //Gets all important information
     getImportantInfomation: function (callback) {
         return query(`SELECT infoid, title, subtitle, description, image FROM importantinfo`).then((result,err) =>{
     
@@ -33,6 +33,7 @@ const importantInformation = {
             
         });
     },
+    //Gets one important information by its id
     getImportantInformationById: function (infoid, callback) {
         return query('SELECT * FROM importantinfo WHERE infoid = $1', [infoid])
             .then((result, err) => {
@@ -45,8 +46,8 @@ const importantInformation = {
                 }
             });
     },
-    
-        updateImportantInformation: function (infoid, title, subtitle, description, image, callback) {
+    //Updates the entry of an important information by id
+    updateImportantInformation: function (infoid, title, subtitle, description, image, callback) {
         return query(
           'UPDATE importantinfo SET title = $2, subtitle = $3, description = $4, image = $5 WHERE infoid = $1 RETURNING *',
           [infoid, title, subtitle, description, image]
@@ -65,7 +66,7 @@ const importantInformation = {
             return callback(error, null);
           });
       },
-      
+      //Removes important infromation from the db
       deleteImportantInformation: function (infoid, callback) {
         return query(`DELETE FROM importantinfo
         WHERE infoid=$1`,

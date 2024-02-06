@@ -3,6 +3,7 @@ const res = require("express/lib/response");
 const { query } = require("../database");
 
 const events = {
+  //Adds a new event into the db
   addEvent: function (
     title,
     image_banner,
@@ -80,7 +81,7 @@ const events = {
       return Promise.reject(error.message);
     }
   },
-
+  //Gets all events
   getEvents: function (callback) {
     return query(`SELECT eventid, title, image_banner,
                         TO_CHAR(time_start, 'YYYY-MM-DD HH24:MI:SS') AS "time_start",
@@ -154,6 +155,7 @@ const events = {
   //         });
   // },
 
+  //Updates an event's details
   updateEvent: function (
     eventid,
     title,
@@ -225,7 +227,7 @@ const events = {
       callback(error, null);
     }
   },
-
+  //Removes event from the db
   deleteEvent: function (eventid, callback) {
     return query(
       `DELETE FROM events
@@ -240,7 +242,7 @@ const events = {
       }
     });
   },
-
+  //Adds an event to a list of saved events 
   savevents: function (uid, eventid, callback) {
     return query(
       `INSERT INTO savedevent (uid, eventid) VALUES ($1, $2) RETURNING*`,
@@ -255,6 +257,7 @@ const events = {
       }
     });
   },
+  //Gets a user's own saved events
   getusersave: function (uid, callback) {
     return query(
       `SELECT e.eventid, e.title, e.image_banner,
@@ -274,6 +277,7 @@ const events = {
       }
     });
   },
+  //Removes a saved event from its list
   deletesaveEvent: function (eventid, uid, callback) {
     return query(
       `DELETE FROM savedevent
@@ -288,6 +292,7 @@ const events = {
       }
     });
   },
+  //Gets the event that was saved the most across users
   getmostsavedEvent: function (callback) {
     return query(`SELECT e.eventid, e.title, COUNT(s.savedid) as savedCount
                 FROM events e

@@ -3,6 +3,7 @@ const res = require("express/lib/response");
 const { query } = require("../database");
 
 const map = {
+  //Adds a marker to the map
   addmarker: function (
     location_name,
     category,
@@ -24,7 +25,7 @@ const map = {
       }
     });
   },
-
+  //Retrieves all marker details
   getmarker: function (callback) {
     return query(
       `SELECT mapid, location_name, category, description, coordinates, image FROM marker`
@@ -37,7 +38,7 @@ const map = {
       }
     });
   },
-
+  //Gets individual marker details
   getmarkerindiv: function (mapid, callback) {
     return query(
       `SELECT mapid, location_name, category, description, coordinates, image FROM marker where mapid = $1 `,
@@ -51,7 +52,7 @@ const map = {
       }
     });
   },
-
+  //To update the details of an edited marker
   updatemarker: function (
     mapid,
     location_name,
@@ -78,7 +79,7 @@ const map = {
         return callback(error, null);
       });
   },
-
+  //Removes a marker from the db
   deletemarker: function (mapid, callback) {
     return query(
       `DELETE FROM marker

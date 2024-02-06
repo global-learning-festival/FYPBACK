@@ -3,6 +3,7 @@ const res = require("express/lib/response");
 const { query } = require("../database");
 
 const login = {
+  //Gets details of user attempting to login
   verify: function (username, callback) {
     return query(`select * from role where username = $1`, [username]).then(
       (result, err) => {
