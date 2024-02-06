@@ -53,8 +53,9 @@ app.use((req, res, next) => {
 
   next();
 });
-app.get('/validateLogin', (req, res, next) => {
-
+app.get(
+  "/validateLogin",
+  (req, res, next) => {
     //If the token is valid, the logic extracts the user id and the role information.
     //If the role is not user, then response 403 UnAuthorized
     //The user id information is inserted into the request.body.userId
@@ -64,7 +65,7 @@ app.get('/validateLogin', (req, res, next) => {
       // JWT using the split function
       let token = req.headers.authorization.split(" ")[1];
       //console.log('Check for received token from frontend : \n');
-      console.log("key: "+process.env.JWTKey);
+      console.log("key: " + process.env.JWTKey);
       jwt.verify(token, process.env.JWTKey, (err, data) => {
         console.log("data extracted from token \n", data);
         if (err) {
@@ -736,7 +737,7 @@ app.get("/user/:userid", (req, res) => {
     }
   });
 });
-app.get("/user/:uid", (req, res) => {
+app.get("/useruid/:uid", (req, res) => {
   const uid = req.params.uid;
   User.getUserByUid(uid, (err, result) => {
     if (err) {
@@ -747,15 +748,15 @@ app.get("/user/:uid", (req, res) => {
     }
   });
 });
-app.put("/user/:userid", (req, res) => {
-  var userid = req.params.userid;
+app.put("/user/:uid", (req, res) => {
+  var uid = req.params.uid;
   var company = req.body.company;
   var jobtitle = req.body.jobtitle;
   var linkedinurl = req.body.linkedinurl;
   var profile_pic = req.body.publicId;
 
   User.updateUsers(
-    userid,
+    uid,
     company,
     jobtitle,
     linkedinurl,
@@ -803,36 +804,30 @@ app.get("/api/linkedin/redirect", async (req, res) => {
   return res.json(Redirect(req.query.code));
 });
 
-app.post("/adduser", (req, res) => {
+app.post("/addlinkedinuser", (req, res) => {
   var first_name = req.body.first_name;
   var last_name = req.body.last_name;
   var company = req.body.company;
+  var linkedinurl = req.body.linkedinurl;
   var uid = req.body.uid;
+  var type = req.body.type;
 
-  // Check if the user exists in the database
-  User.getUserByUid(uid, (err, result) => {
-    if (err) {
-      console.error(err);
-      res.status(500).send("Error checking user existence");
-    } else {
-      if (result.length > 0) {
-        // User already exists, you can handle this case accordingly
-        console.log("User already exists. Retrieving information:", result);
-        res.status(200).send("User already exists");
+  User.addLinkedinUser(
+    first_name,
+    last_name,
+    company,
+    linkedinurl,
+    uid,
+    type,
+    (err, result) => {
+      if (err) {
+        console.log(err);
+        res.status(500).send();
       } else {
-        // User does not exist, insert into the database
-        User.addUser(first_name, last_name, company, uid, (err, result) => {
-          if (err) {
-            console.error(err);
-            res.status(500).send("Error inserting user data");
-          } else {
-            console.log("User information stored successfully:", result);
-            res.status(201).send("User information stored successfully");
-          }
-        });
+        res.status(201).send(result);
       }
     }
-  });
+  );
 });
 
 module.exports = app;

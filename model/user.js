@@ -82,17 +82,27 @@ const User = {
       }
     });
   },
-
-  getUserByUid: function (uid, callback) {
-    return query(`SELECT * FROM users WHERE uid = $1`, [uid])
-      .then((result) => {
-        // Return the user if found, otherwise return null
-        return callback(null, result.rows.length > 0 ? result.rows[0] : null);
-      })
-      .catch((err) => {
-        console.error("Error retrieving user by UID:", err);
+  addLinkedinUser: function (
+    first_name,
+    last_name,
+    company,
+    linkedinurl,
+    uid,
+    type,
+    callback
+  ) {
+    return query(
+      `INSERT INTO users (first_name, last_name, company, linkedinurl, uid, type) VALUES ($1, $2, $3, $4, $5, $6) RETURNING*`,
+      [first_name, last_name, company, linkedinurl, uid, type]
+    ).then((result, err) => {
+      if (err) {
         callback(err, null);
-      });
+        console.log(err);
+        return;
+      } else {
+        return callback(null, result);
+      }
+    });
   },
   // for admin list
   getUsers: function (callback) {
@@ -135,8 +145,24 @@ const User = {
         callback(err, null);
       });
   },
+  getUserByUid: function (uid, callback) {
+    return query(
+      `SELECT userid, uid, first_name, last_name, company, linkedinurl, jobtitle , profile_pic 
+      FROM users 
+      WHERE uid = $1`,
+      [uid] // Convert uid to string explicitly
+    )
+      .then((result) => {
+        // Return the user if found, otherwise return null
+        return callback(null, result.rows.length > 0 ? result.rows[0] : null);
+      })
+      .catch((err) => {
+        console.error("Error retrieving user by UID:", err);
+        callback(err, null);
+      });
+  },
   updateUsers: function (
-    userid,
+    uid,
     company,
     jobtitle,
     linkedinurl,
@@ -144,8 +170,8 @@ const User = {
     callback
   ) {
     query(
-      `UPDATE users SET company = $2, jobtitle = $3, linkedinurl = $4, profile_pic = $5 WHERE userid = $1 RETURNING *`,
-      [userid, company, jobtitle, linkedinurl, profile_pic]
+      `UPDATE users SET company = $2, jobtitle = $3, linkedinurl = $4, profile_pic = $5 WHERE uid = $1 RETURNING *`,
+      [uid, company, jobtitle, linkedinurl, profile_pic]
     )
       .then((result) => {
         // Handle the result here
