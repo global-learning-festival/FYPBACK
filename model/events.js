@@ -87,7 +87,7 @@ const events = {
                         TO_CHAR(time_start, 'YYYY-MM-DD HH24:MI:SS') AS "time_start",
                         TO_CHAR(time_end, 'YYYY-MM-DD HH24:MI:SS') AS "time_end",
                         location, keynote_speaker, description, survey_link
-                            FROM events ORDER BY eventid ASC;`)
+                            FROM events ORDER BY time_start ASC;`)
       .then((result) => {
         callback(null, result);
       })
@@ -116,46 +116,7 @@ const events = {
       }
     });
   },
-  // this function status 200 but gets nothing in postman
-  //    getEventbyId: function (eventid, callback) {
-  //     const formatDateTime = (datetime) => {
-  //         if (datetime === undefined || datetime === null) {
-  //             return null;
-  //         }
 
-  //         const parsedDateTime = new Date(datetime);
-
-  //         if (isNaN(parsedDateTime.getTime())) {
-  //             throw new Error('Invalid datetime string: ' + datetime);
-  //         }
-
-  //         // Format the datetime to a string in the desired format
-  //         const formattedDateTime = parsedDateTime.toISOString().replace('T', ' ').replace('Z', '').slice(0, -5);
-
-  //         return formattedDateTime;
-  //     };
-
-  //     const queryText = 'SELECT *, time_start AT TIME ZONE \'Asia/Singapore\' AS time_start, time_end AT TIME ZONE \'Asia/Singapore\' AS time_end FROM events WHERE eventid = $1';
-
-  //     query(queryText, [eventid])
-  //         .then((result) => {
-  //             // Format the datetime values in the result
-  //             const formattedResult = result.rows.map(row => ({
-  //                 ...row,
-  //                 formatted_time_start: formatDateTime(row.time_start),
-  //                 formatted_time_end: formatDateTime(row.time_end)
-  //             }));
-
-  //             console.log(formattedResult);
-  //             callback(null, formattedResult);
-  //         })
-  //         .catch((error) => {
-  //             console.error('Error executing query:', error);
-  //             callback(error, null); // Pass the error to the callback
-  //         });
-  // },
-
-  //Updates an event's details
   updateEvent: function (
     eventid,
     title,
