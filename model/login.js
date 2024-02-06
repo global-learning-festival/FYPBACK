@@ -10,7 +10,7 @@ const login = {
         if (err) {
           callback(err, null);
           return;
-        } else if (result.length === 0) {
+        } else if (result.rows.length == 0) {
           return callback(null, null);
         } else {
           // to see the result
