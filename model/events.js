@@ -16,7 +16,7 @@ const events = {
     callback
   ) {
     if (typeof callback !== "function") {
-      console.error("Callback is not a function.");
+      //console.error("Callback is not a function.");
       return Promise.reject("Callback is not a function.");
     }
 
@@ -67,16 +67,14 @@ const events = {
         ]
       )
         .then((result) => {
-          callback(null, result);
-          return result;
+          return callback(null, result);
         })
         .catch((err) => {
-          console.error(err);
-          callback(err, null);
-          throw err;
+          //console.error(err);
+          return callback(err, null);
         });
     } catch (error) {
-      console.error(error.message);
+      //console.error(error.message);
       callback(error, null);
       return Promise.reject(error.message);
     }
@@ -92,7 +90,7 @@ const events = {
         callback(null, result);
       })
       .catch((err) => {
-        console.error(err);
+        //console.error(err);
         callback(err, null);
       });
   },
@@ -100,21 +98,17 @@ const events = {
   getEventbyId: function (eventid, callback) {
     return query(
       `SELECT eventid, title, image_banner,
-       TO_CHAR(time_start , 'YYYY-MM-DD HH24:MI:SS' ) AS "time_start",
-       TO_CHAR(time_end , 'YYYY-MM-DD HH24:MI:SS' ) AS "time_end",
+       TO_CHAR(time_start, 'YYYY-MM-DD HH24:MI:SS') AS "time_start",
+       TO_CHAR(time_end, 'YYYY-MM-DD HH24:MI:SS') AS "time_end",
        location, keynote_speaker, description, survey_link
-       FROM events WHERE eventid = $1`,
-      [eventid]
-    ).then((result, err) => {
-      if (err) {
-        callback(err, null);
-        console.log(err);
-        return;
-      } else {
-        console.log(result);
-        callback(null, result);
-      }
-    });
+       FROM events WHERE eventid = $1`,[eventid]
+    ).then(result=> {
+      return callback(null, result);
+    
+  }).catch(error=>{
+    return callback(error, null);
+
+  });
   },
 
   updateEvent: function (
@@ -130,7 +124,7 @@ const events = {
     callback
   ) {
     if (typeof callback !== "function") {
-      console.error("Callback is not a function.");
+      //console.error("Callback is not a function.");
       return Promise.reject("Callback is not a function.");
     }
 
@@ -179,95 +173,77 @@ const events = {
         })
         .catch((error) => {
           // Handle errors and pass to callback
-          console.error("Error updating event information:", error);
+          //console.error("Error updating event information:", error);
           callback(error, null);
         });
     } catch (error) {
       // Catch and handle any errors in the try block
-      console.error("Error updating event information:", error.message);
+      //console.error("Error updating event information:", error.message);
       callback(error, null);
     }
   },
   //Removes event from the db
   deleteEvent: function (eventid, callback) {
     return query(
-      `DELETE FROM events
-        WHERE eventid=$1`,
+      `DELETE FROM events WHERE eventid = $1`,
       [eventid]
-    ).then((result, err) => {
-      if (err) {
-        callback(err, null);
-        return;
-      } else {
-        return callback(null, result);
-      }
-    });
+    ).then(result=> {
+      return callback(null, result);
+    
+  }).catch(error=>{
+    return callback(error, null);
+
+  });
   },
   //Adds an event to a list of saved events 
   savevents: function (uid, eventid, callback) {
     return query(
-      `INSERT INTO savedevent (uid, eventid) VALUES ($1, $2) RETURNING*`,
+      `INSERT INTO savedevent (uid, eventid) VALUES ($1, $2) RETURNING *`,
       [uid, eventid]
-    ).then((result, err) => {
-      if (err) {
-        callback(err, null);
-        console.log(err);
-        return;
-      } else {
-        return callback(null, result);
-      }
-    });
+    ).then(result=> {
+      return callback(null, result);
+    
+  }).catch(error=>{
+    return callback(error, null);
+
+  });
   },
   //Gets a user's own saved events
   getusersave: function (uid, callback) {
     return query(
-      `SELECT e.eventid, e.title, e.image_banner,
-                TO_CHAR(e.time_start, 'YYYY-MM-DD HH24:MI:SS') AS "time_start",
-                TO_CHAR(e.time_end, 'YYYY-MM-DD HH24:MI:SS') AS "time_end",
-                e.location, e.keynote_speaker, e.description, e.survey_link
-            FROM events e
-            JOIN savedevent s ON e.eventid = s.eventid
-            WHERE s.uid = $1; `,
+      `SELECT e.eventid, e.title, e.image_banner, TO_CHAR(e.time_start, 'YYYY-MM-DD HH24:MI:SS') AS "time_start", TO_CHAR(e.time_end, 'YYYY-MM-DD HH24:MI:SS') AS "time_end", e.location, e.keynote_speaker, e.description, e.survey_link FROM events e JOIN savedevent s ON e.eventid = s.eventid WHERE s.uid = $1; `,
       [uid]
-    ).then((result, err) => {
-      if (err) {
-        callback(err, null);
-        return;
-      } else {
-        return callback(null, result);
-      }
-    });
+    ).then(result=> {
+      return callback(null, result);
+    
+  }).catch(error=>{
+    return callback(error, null);
+
+  });
   },
   //Removes a saved event from its list
   deletesaveEvent: function (eventid, uid, callback) {
     return query(
-      `DELETE FROM savedevent
-                WHERE eventid = $1 AND uid = $2;`,
+      `DELETE FROM savedevent WHERE eventid = $1 AND uid = $2`,
       [eventid, uid]
-    ).then((result, err) => {
-      if (err) {
-        callback(err, null);
-        return;
-      } else {
-        return callback(null, result);
-      }
-    });
+    ).then(result=> {
+      return callback(null, result);
+    
+  }).catch(error=>{
+    return callback(error, null);
+
+  });
   },
   //Gets the event that was saved the most across users
   getmostsavedEvent: function (callback) {
-    return query(`SELECT e.eventid, e.title, COUNT(s.savedid) as savedCount
-                FROM events e
-                JOIN savedevent s ON e.eventid = s.eventid
-                GROUP BY e.eventid
-                ORDER BY savedCount DESC
-                LIMIT 1;`).then((result, err) => {
-      if (err) {
-        callback(err, null);
-        return;
-      } else {
-        return callback(null, result);
-      }
-    });
+    return query(`SELECT e.eventid, e.title, COUNT(s.savedid) as savedCount FROM events e JOIN savedevent s ON e.eventid = s.eventid GROUP BY e.eventid ORDER BY savedCount DESC LIMIT 1;`)
+                .then(result=> {
+                  return callback(null, result);
+                
+              }).catch(error=>{
+                return callback(error, null);
+            
+              });
   },
 };
 

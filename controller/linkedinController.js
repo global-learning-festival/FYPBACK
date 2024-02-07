@@ -49,7 +49,7 @@ const getUserData = async (accessToken) => {
       // Clear session information (example)
       // clearSession();
     } else {
-      console.error("Error fetching user data:", error);
+      //console.error("Error fetching user data:", error);
       throw error;
     }
   }

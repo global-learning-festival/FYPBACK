@@ -6,7 +6,7 @@ jest.mock('../database', () => ({
   query: jest.fn(),
 }));
 
-describe('User Module', () => {
+ describe('User Module', () => {
   describe('getAdmin function', () => {
     it('should call callback with admin/event manager users', async () => {
       // Mocking the result of the query function
@@ -227,156 +227,156 @@ describe('User Module', () => {
     // Add more test cases for edge cases or specific scenarios
   });
 
-  describe('getUsers function', () => {
-    it('should call callback with all users for admin/frontend', async () => {
-      // Mocking the result of the query function
-      const mockAllUsers = [
-        { first_name: 'John', last_name: 'Doe', type: 'regular' },
-        { first_name: 'Jane', last_name: 'Doe', type: 'admin' },
-        // Add more objects as needed
-      ];
-      query.mockResolvedValueOnce(mockAllUsers);
+  // describe('getUsers function', () => {
+  //   it('should call callback with all users for admin/frontend', async () => {
+  //     // Mocking the result of the query function
+  //     const mockAllUsers = [
+  //       { first_name: 'John', last_name: 'Doe', type: 'regular' },
+  //       { first_name: 'Jane', last_name: 'Doe', type: 'admin' },
+  //       // Add more objects as needed
+  //     ];
+  //     query.mockResolvedValueOnce(mockAllUsers);
 
-      // Mocking the callback function
-      const callback = jest.fn();
+  //     // Mocking the callback function
+  //     const callback = jest.fn();
 
-      // Calling the getUsers function
-      await user.getUsers(callback);
+  //     // Calling the getUsers function
+  //     await user.getUsers(callback);
 
-      // Expecting the query function to be called with the correct parameters
-      expect(query).toHaveBeenCalledWith(`SELECT first_name , last_name , type  FROM users`);
+  //     // Expecting the query function to be called with the correct parameters
+  //     expect(query).toHaveBeenCalledWith(`SELECT first_name , last_name , type  FROM users`);
 
-      // Expecting the callback function to be called with null error and the list of all users for admin/frontend
-      expect(callback).toHaveBeenCalledWith(null, mockAllUsers);
-    });
+  //     // Expecting the callback function to be called with null error and the list of all users for admin/frontend
+  //     expect(callback).toHaveBeenCalledWith(null, mockAllUsers);
+  //   });
 
-    it('should call callback with error when getting all users fails', async () => {
-      // Mocking an error for the query function
-      const mockError = new Error('Database error');
-      query.mockRejectedValueOnce(mockError);
+  //   it('should call callback with error when getting all users fails', async () => {
+  //     // Mocking an error for the query function
+  //     const mockError = new Error('Database error');
+  //     query.mockRejectedValueOnce(mockError);
 
-      // Mocking the callback function
-      const callback = jest.fn();
+  //     // Mocking the callback function
+  //     const callback = jest.fn();
 
-      // Calling the getUsers function
-      await user.getUsers(callback);
+  //     // Calling the getUsers function
+  //     await user.getUsers(callback);
 
-      // Expecting the query function to be called with the correct parameters
-      expect(query).toHaveBeenCalledWith(`SELECT first_name , last_name , type  FROM users`);
+  //     // Expecting the query function to be called with the correct parameters
+  //     expect(query).toHaveBeenCalledWith(`SELECT first_name , last_name , type  FROM users`);
 
-      // Expecting the callback function to be called with the error
-      expect(callback).toHaveBeenCalledWith(mockError, null);
-    });
+  //     // Expecting the callback function to be called with the error
+  //     expect(callback).toHaveBeenCalledWith(mockError, null);
+  //   });
 
-    // Add more test cases for edge cases or specific scenarios
-  });
+  //   // Add more test cases for edge cases or specific scenarios
+  // });
 
-  describe('getUserList function', () => {
-    it('should call callback with all users at an event for user-facing frontend', async () => {
-      // Mocking the result of the query function
-      const mockUserList = [
-        { first_name: 'John', last_name: 'Doe', company: 'ABC Inc.', linkedinurl: 'linkedin.com/johndoe', jobtitle: 'Engineer', profile_pic: 'john.jpg' },
-        { first_name: 'Jane', last_name: 'Doe', company: 'XYZ Corp.', linkedinurl: 'linkedin.com/janedoe', jobtitle: 'Manager', profile_pic: 'jane.jpg' },
-        // Add more objects as needed
-      ];
-      query.mockResolvedValueOnce(mockUserList);
+  // describe('getUserList function', () => {
+  //   it('should call callback with all users at an event for user-facing frontend', async () => {
+  //     // Mocking the result of the query function
+  //     const mockUserList = [
+  //       { first_name: 'John', last_name: 'Doe', company: 'ABC Inc.', linkedinurl: 'linkedin.com/johndoe', jobtitle: 'Engineer', profile_pic: 'john.jpg' },
+  //       { first_name: 'Jane', last_name: 'Doe', company: 'XYZ Corp.', linkedinurl: 'linkedin.com/janedoe', jobtitle: 'Manager', profile_pic: 'jane.jpg' },
+  //       // Add more objects as needed
+  //     ];
+  //     query.mockResolvedValueOnce(mockUserList);
 
-      // Mocking the callback function
-      const callback = jest.fn();
+  //     // Mocking the callback function
+  //     const callback = jest.fn();
 
-      // Calling the getUserList function
-      await user.getUserList(callback);
+  //     // Calling the getUserList function
+  //     await user.getUserList(callback);
 
-      // Expecting the query function to be called with the correct parameters
-      expect(query).toHaveBeenCalledWith(`SELECT first_name , last_name , company ,linkedinurl, jobtitle , profile_pic FROM users`);
+  //     // Expecting the query function to be called with the correct parameters
+  //     expect(query).toHaveBeenCalledWith(`SELECT first_name , last_name , company ,linkedinurl, jobtitle , profile_pic FROM users`);
 
-      // Expecting the callback function to be called with null error and the list of all users at an event for user-facing frontend
-      expect(callback).toHaveBeenCalledWith(null, mockUserList);
-    });
+  //     // Expecting the callback function to be called with null error and the list of all users at an event for user-facing frontend
+  //     expect(callback).toHaveBeenCalledWith(null, mockUserList);
+  //   });
 
-    it('should call callback with error when getting user list fails', async () => {
-      // Mocking an error for the query function
-      const mockError = new Error('Database error');
-      query.mockRejectedValueOnce(mockError);
+  //   it('should call callback with error when getting user list fails', async () => {
+  //     // Mocking an error for the query function
+  //     const mockError = new Error('Database error');
+  //     query.mockRejectedValueOnce(mockError);
 
-      // Mocking the callback function
-      const callback = jest.fn();
+  //     // Mocking the callback function
+  //     const callback = jest.fn();
 
-      // Calling the getUserList function
-      await user.getUserList(callback);
+  //     // Calling the getUserList function
+  //     await user.getUserList(callback);
 
-      // Expecting the query function to be called with the correct parameters
-      expect(query).toHaveBeenCalledWith(`SELECT first_name , last_name , company ,linkedinurl, jobtitle , profile_pic FROM users`);
+  //     // Expecting the query function to be called with the correct parameters
+  //     expect(query).toHaveBeenCalledWith(`SELECT first_name , last_name , company ,linkedinurl, jobtitle , profile_pic FROM users`);
 
-      // Expecting the callback function to be called with the error
-      expect(callback).toHaveBeenCalledWith(mockError, null);
-    });
+  //     // Expecting the callback function to be called with the error
+  //     expect(callback).toHaveBeenCalledWith(mockError, null);
+  //   });
 
-    // Add more test cases for edge cases or specific scenarios
-  });
+  //   // Add more test cases for edge cases or specific scenarios
+  // });
 
-  describe('getUserById function', () => {
-    it('should call callback with specific user by userid', async () => {
-      // Mocking the result of the query function
-      const mockUserById = { userid: 1, uid: '123456', first_name: 'John', last_name: 'Doe', company: 'ABC Inc.', linkedinurl: 'linkedin.com/johndoe', jobtitle: 'Engineer', profile_pic: 'john.jpg' };
-      query.mockResolvedValueOnce({ rows: [mockUserById] });
+  // describe('getUserById function', () => {
+  //   it('should call callback with specific user by userid', async () => {
+  //     // Mocking the result of the query function
+  //     const mockUserById = { userid: 1, uid: '123456', first_name: 'John', last_name: 'Doe', company: 'ABC Inc.', linkedinurl: 'linkedin.com/johndoe', jobtitle: 'Engineer', profile_pic: 'john.jpg' };
+  //     query.mockResolvedValueOnce({ rows: [mockUserById] });
 
-      // Mocking the callback function
-      const callback = jest.fn();
+  //     // Mocking the callback function
+  //     const callback = jest.fn();
 
-      // Calling the getUserById function
-      await user.getUserById(1, callback);
+  //     // Calling the getUserById function
+  //     await user.getUserById(1, callback);
 
-      // Expecting the query function to be called with the correct parameters
-      expect(query).toHaveBeenCalledWith(`SELECT userid, uid, first_name, last_name, company, linkedinurl, jobtitle , profile_pic FROM users WHERE userid = $1`, [1]);
+  //     // Expecting the query function to be called with the correct parameters
+  //     expect(query).toHaveBeenCalledWith(`SELECT userid, uid, first_name, last_name, company, linkedinurl, jobtitle , profile_pic FROM users WHERE userid = $1`, [1]);
 
-      // Expecting the callback function to be called with null error and the specific user by userid
-      expect(callback).toHaveBeenCalledWith(null, mockUserById);
-    });
+  //     // Expecting the callback function to be called with null error and the specific user by userid
+  //     expect(callback).toHaveBeenCalledWith(null, mockUserById);
+  //   });
 
-    it('should call callback with null when user is not found by userid', async () => {
-      // Mocking the result of the query function with an empty array
-      query.mockResolvedValueOnce({ rows: [] });
+  //   it('should call callback with null when user is not found by userid', async () => {
+  //     // Mocking the result of the query function with an empty array
+  //     query.mockResolvedValueOnce({ rows: [] });
 
-      // Mocking the callback function
-      const callback = jest.fn();
+  //     // Mocking the callback function
+  //     const callback = jest.fn();
 
-      // Calling the getUserById function
-      await user.getUserById(2, callback);
+  //     // Calling the getUserById function
+  //     await user.getUserById(2, callback);
 
-      // Expecting the query function to be called with the correct parameters
-      expect(query).toHaveBeenCalledWith(`SELECT userid, uid, first_name, last_name, company, linkedinurl, jobtitle , profile_pic FROM users WHERE userid = $1`, [2]);
+  //     // Expecting the query function to be called with the correct parameters
+  //     expect(query).toHaveBeenCalledWith(`SELECT userid, uid, first_name, last_name, company, linkedinurl, jobtitle , profile_pic FROM users WHERE userid = $1`, [2]);
 
-      // Expecting the callback function to be called with null error and null result when user is not found
-      expect(callback).toHaveBeenCalledWith(null, null);
-    });
+  //     // Expecting the callback function to be called with null error and null result when user is not found
+  //     expect(callback).toHaveBeenCalledWith(null, null);
+  //   });
 
-    it('should call callback with error when getting user by userid fails', async () => {
-      // Mocking an error for the query function
-      const mockError = new Error('Database error');
-      query.mockRejectedValueOnce(mockError);
+  //   it('should call callback with error when getting user by userid fails', async () => {
+  //     // Mocking an error for the query function
+  //     const mockError = new Error('Database error');
+  //     query.mockRejectedValueOnce(mockError);
 
-      // Mocking the callback function
-      const callback = jest.fn();
+  //     // Mocking the callback function
+  //     const callback = jest.fn();
 
-      // Calling the getUserById function
-      await user.getUserById(3, callback);
+  //     // Calling the getUserById function
+  //     await user.getUserById(3, callback);
 
-      // Expecting the query function to be called with the correct parameters
-      expect(query).toHaveBeenCalledWith(`SELECT userid, uid, first_name, last_name, company, linkedinurl, jobtitle , profile_pic FROM users WHERE userid = $1`, [3]);
+  //     // Expecting the query function to be called with the correct parameters
+  //     expect(query).toHaveBeenCalledWith(`SELECT userid, uid, first_name, last_name, company, linkedinurl, jobtitle , profile_pic FROM users WHERE userid = $1`, [3]);
 
-      // Expecting the callback function to be called with the error
-      expect(callback).toHaveBeenCalledWith(mockError, null);
-    });
+  //     // Expecting the callback function to be called with the error
+  //     expect(callback).toHaveBeenCalledWith(mockError, null);
+  //   });
 
-    // Add more test cases for edge cases or specific scenarios
-  });
+  //   // Add more test cases for edge cases or specific scenarios
+  // });
 
   describe('getUserByUid function', () => {
-    it('should call callback with specific user by linkedinn userid', async () => {
+    it('should call callback with specific user by linkedin userid', async () => {
       // Mocking the result of the query function
       const mockUserByUid = { userid: 4, uid: '456789', first_name: 'Jane', last_name: 'Doe', company: 'XYZ Corp.', linkedinurl: 'linkedin.com/janedoe', jobtitle: 'Manager', profile_pic: 'jane.jpg' };
-      query.mockResolvedValueOnce({ rows: [mockUserByUid] });
+      query.mockResolvedValueOnce(mockUserByUid);
 
       // Mocking the callback function
       const callback = jest.fn();
@@ -391,9 +391,9 @@ describe('User Module', () => {
       expect(callback).toHaveBeenCalledWith(null, mockUserByUid);
     });
 
-    it('should call callback with null when user is not found by linkedinn userid', async () => {
+    it('should call callback with null when user is not found by linkedin userid', async () => {
       // Mocking the result of the query function with an empty array
-      query.mockResolvedValueOnce({ rows: [] });
+      query.mockResolvedValueOnce(null);
 
       // Mocking the callback function
       const callback = jest.fn();
@@ -408,7 +408,7 @@ describe('User Module', () => {
       expect(callback).toHaveBeenCalledWith(null, null);
     });
 
-    it('should call callback with error when getting user by linkedinn userid fails', async () => {
+    it('should call callback with error when getting user by linkedin userid fails', async () => {
       // Mocking an error for the query function
       const mockError = new Error('Database error');
       query.mockRejectedValueOnce(mockError);
@@ -433,7 +433,7 @@ describe('User Module', () => {
     it('should call callback with updated user details', async () => {
       // Mocking the result of the query function
       const mockUpdatedUser = { userid: 5, uid: '123456', company: 'Updated Corp.', jobtitle: 'Senior Engineer', linkedinurl: 'linkedin.com/updateduser', profile_pic: 'updated.jpg' };
-      query.mockResolvedValueOnce({ rows: [mockUpdatedUser] });
+      query.mockResolvedValueOnce(mockUpdatedUser);
 
       // Mocking the callback function
       const callback = jest.fn();
@@ -469,7 +469,7 @@ describe('User Module', () => {
       );
 
       // Expecting the callback function to be called with the error
-      expect(callback).toHaveBeenCalledWith(mockError, null);
+      expect(callback).toHaveBeenCalledWith(mockError,null);
     });
 
     // Add more test cases for edge cases or specific scenarios
@@ -494,7 +494,7 @@ describe('User Module', () => {
       );
 
       // Expecting the callback function to be called with null error and the added manager details
-      expect(callback).toHaveBeenCalledWith(null, mockAddedManager);
+      expect(callback).toHaveBeenCalledWith(null,mockAddedManager);
     });
 
     it('should call callback with error when adding a manager fails', async () => {

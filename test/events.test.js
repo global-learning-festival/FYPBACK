@@ -40,8 +40,8 @@ describe('Events Module', () => {
         [
           'New Event',
           'banner.jpg',
-          '2024-02-07T10:00',
-          '2024-02-07T12:00',
+          "2024-02-07 02:00:0",
+          "2024-02-07 04:00:0",
           'Location',
           'Speaker',
           'Description',
@@ -85,8 +85,8 @@ describe('Events Module', () => {
         [
           'New Event',
           'banner.jpg',
-          '2024-02-07T10:00',
-          '2024-02-07T12:00',
+          "2024-02-07 02:00:0",
+          "2024-02-07 04:00:0",
           'Location',
           'Speaker',
           'Description',
@@ -202,11 +202,10 @@ describe('Events Module', () => {
       // Expecting the query function to be called with the correct parameters
       expect(query).toHaveBeenCalledWith(
         `SELECT eventid, title, image_banner,
-                        TO_CHAR(time_start, 'YYYY-MM-DD HH24:MI:SS') AS "time_start",
-                        TO_CHAR(time_end, 'YYYY-MM-DD HH24:MI:SS') AS "time_end",
-                        location, keynote_speaker, description, survey_link
-                            FROM events WHERE eventid = $1;`,
-        [1]
+       TO_CHAR(time_start, 'YYYY-MM-DD HH24:MI:SS') AS "time_start",
+       TO_CHAR(time_end, 'YYYY-MM-DD HH24:MI:SS') AS "time_end",
+       location, keynote_speaker, description, survey_link
+       FROM events WHERE eventid = $1`,[1]
       );
 
       // Expecting the callback function to be called with null error and the event details
@@ -227,11 +226,10 @@ describe('Events Module', () => {
       // Expecting the query function to be called with the correct parameters
       expect(query).toHaveBeenCalledWith(
         `SELECT eventid, title, image_banner,
-                        TO_CHAR(time_start, 'YYYY-MM-DD HH24:MI:SS') AS "time_start",
-                        TO_CHAR(time_end, 'YYYY-MM-DD HH24:MI:SS') AS "time_end",
-                        location, keynote_speaker, description, survey_link
-                            FROM events WHERE eventid = $1;`,
-        [1]
+       TO_CHAR(time_start, 'YYYY-MM-DD HH24:MI:SS') AS "time_start",
+       TO_CHAR(time_end, 'YYYY-MM-DD HH24:MI:SS') AS "time_end",
+       location, keynote_speaker, description, survey_link
+       FROM events WHERE eventid = $1`,[1]
       );
 
       // Expecting the callback function to be called with the error
@@ -276,29 +274,18 @@ describe('Events Module', () => {
 
       // Expecting the query function to be called with the correct parameters
       expect(query).toHaveBeenCalledWith(
-        `
-                UPDATE events SET
-                    title = $1,
-                    image_banner = $2,
-                    time_start = TO_TIMESTAMP($3, 'YYYY-MM-DD HH24:MI:SS'),
-                    time_end = TO_TIMESTAMP($4, 'YYYY-MM-DD HH24:MI:SS'),
-                    location = $5,
-                    keynote_speaker = $6,
-                    description = $7,
-                    survey_link = $8
-                WHERE eventid = $9
-                RETURNING *;
-            `,
+        "UPDATE events SET title = $2, image_banner = $3, time_start = TO_TIMESTAMP($4, 'YYYY-MM-DD HH24:MI:SS'), time_end = TO_TIMESTAMP($5, 'YYYY-MM-DD HH24:MI:SS') , location = $6, keynote_speaker = $7, description = $8, survey_link = $9 WHERE eventid = $1 RETURNING *",
+
         [
+          1,
           'Updated Event',
           'new-banner.jpg',
-          '2024-02-07T14:00',
-          '2024-02-07T16:00',
+          "2024-02-07 06:00:0",
+          "2024-02-07 08:00:0",
           'New Location',
           'New Speaker',
           'Updated description for the event.',
           'new-survey-link',
-          1,
         ]
       );
 
@@ -330,29 +317,18 @@ describe('Events Module', () => {
 
       // Expecting the query function to be called with the correct parameters
       expect(query).toHaveBeenCalledWith(
-        `
-                UPDATE events SET
-                    title = $1,
-                    image_banner = $2,
-                    time_start = TO_TIMESTAMP($3, 'YYYY-MM-DD HH24:MI:SS'),
-                    time_end = TO_TIMESTAMP($4, 'YYYY-MM-DD HH24:MI:SS'),
-                    location = $5,
-                    keynote_speaker = $6,
-                    description = $7,
-                    survey_link = $8
-                WHERE eventid = $9
-                RETURNING *;
-            `,
+        `UPDATE events SET title = $2, image_banner = $3, time_start = TO_TIMESTAMP($4, 'YYYY-MM-DD HH24:MI:SS'), time_end = TO_TIMESTAMP($5, 'YYYY-MM-DD HH24:MI:SS') , location = $6, keynote_speaker = $7, description = $8, survey_link = $9 WHERE eventid = $1 RETURNING *`,
+
         [
+          1,
           'Updated Event',
           'new-banner.jpg',
-          '2024-02-07T14:00',
-          '2024-02-07T16:00',
+          "2024-02-07 06:00:0",
+          "2024-02-07 08:00:0",
           'New Location',
           'New Speaker',
           'Updated description for the event.',
           'new-survey-link',
-          1,
         ]
       );
 
@@ -377,7 +353,7 @@ describe('Events Module', () => {
 
       // Expecting the query function to be called with the correct parameters
       expect(query).toHaveBeenCalledWith(
-        `DELETE FROM events WHERE eventid = $1 RETURNING *;`,
+        `DELETE FROM events WHERE eventid = $1`,
         [1]
       );
 
@@ -398,7 +374,7 @@ describe('Events Module', () => {
 
       // Expecting the query function to be called with the correct parameters
       expect(query).toHaveBeenCalledWith(
-        `DELETE FROM events WHERE eventid = $1 RETURNING *;`,
+        `DELETE FROM events WHERE eventid = $1`,
         [1]
       );
 
@@ -497,13 +473,7 @@ describe('Events Module', () => {
   
       // Expecting the query function to be called with the correct parameters
       expect(query).toHaveBeenCalledWith(
-        `SELECT e.eventid, e.title, e.image_banner,
-                  TO_CHAR(e.time_start, 'YYYY-MM-DD HH24:MI:SS') AS "time_start",
-                  TO_CHAR(e.time_end, 'YYYY-MM-DD HH24:MI:SS") AS "time_end",
-                  e.location, e.keynote_speaker, e.description, e.survey_link
-              FROM events e
-              JOIN savedevent s ON e.eventid = s.eventid
-              WHERE s.uid = $1; `,
+        `SELECT e.eventid, e.title, e.image_banner, TO_CHAR(e.time_start, 'YYYY-MM-DD HH24:MI:SS') AS "time_start", TO_CHAR(e.time_end, 'YYYY-MM-DD HH24:MI:SS') AS "time_end", e.location, e.keynote_speaker, e.description, e.survey_link FROM events e JOIN savedevent s ON e.eventid = s.eventid WHERE s.uid = $1; `,
         [123]
       );
   
@@ -524,13 +494,8 @@ describe('Events Module', () => {
   
       // Expecting the query function to be called with the correct parameters
       expect(query).toHaveBeenCalledWith(
-        `SELECT e.eventid, e.title, e.image_banner,
-                  TO_CHAR(e.time_start, 'YYYY-MM-DD HH24:MI:SS') AS "time_start",
-                  TO_CHAR(e.time_end, 'YYYY-MM-DD HH24:MI:SS") AS "time_end",
-                  e.location, e.keynote_speaker, e.description, e.survey_link
-              FROM events e
-              JOIN savedevent s ON e.eventid = s.eventid
-              WHERE s.uid = $1; `,
+        `SELECT e.eventid, e.title, e.image_banner, TO_CHAR(e.time_start, 'YYYY-MM-DD HH24:MI:SS') AS "time_start", TO_CHAR(e.time_end, 'YYYY-MM-DD HH24:MI:SS') AS "time_end", e.location, e.keynote_speaker, e.description, e.survey_link FROM events e JOIN savedevent s ON e.eventid = s.eventid WHERE s.uid = $1; `,
+
         [123]
       );
   
@@ -555,7 +520,7 @@ describe('Events Module', () => {
   
       // Expecting the query function to be called with the correct parameters
       expect(query).toHaveBeenCalledWith(
-        `DELETE FROM savedevent WHERE eventid = $1 AND uid = $2 RETURNING *`,
+        `DELETE FROM savedevent WHERE eventid = $1 AND uid = $2`,
         [1, 123]
       );
   
@@ -576,7 +541,7 @@ describe('Events Module', () => {
   
       // Expecting the query function to be called with the correct parameters
       expect(query).toHaveBeenCalledWith(
-        `DELETE FROM savedevent WHERE eventid = $1 AND uid = $2 RETURNING *`,
+        `DELETE FROM savedevent WHERE eventid = $1 AND uid = $2`,
         [1, 123]
       );
   
@@ -612,15 +577,7 @@ describe('Events Module', () => {
   
       // Expecting the query function to be called with the correct parameters
       expect(query).toHaveBeenCalledWith(
-        `SELECT e.eventid, e.title, e.image_banner,
-                  TO_CHAR(e.time_start, 'YYYY-MM-DD HH24:MI:SS') AS "time_start",
-                  TO_CHAR(e.time_end, 'YYYY-MM-DD HH24:MI:SS") AS "time_end",
-                  e.location, e.keynote_speaker, e.description, e.survey_link
-              FROM events e
-              JOIN savedevent s ON e.eventid = s.eventid
-              GROUP BY e.eventid
-              ORDER BY COUNT(s.eventid) DESC
-              LIMIT 1;`
+        `SELECT e.eventid, e.title, COUNT(s.savedid) as savedCount FROM events e JOIN savedevent s ON e.eventid = s.eventid GROUP BY e.eventid ORDER BY savedCount DESC LIMIT 1;`
       );
   
       // Expecting the callback function to be called with null error and the most saved event
@@ -640,15 +597,7 @@ describe('Events Module', () => {
   
       // Expecting the query function to be called with the correct parameters
       expect(query).toHaveBeenCalledWith(
-        `SELECT e.eventid, e.title, e.image_banner,
-                  TO_CHAR(e.time_start, 'YYYY-MM-DD HH24:MI:SS') AS "time_start",
-                  TO_CHAR(e.time_end, 'YYYY-MM-DD HH24:MI:SS") AS "time_end",
-                  e.location, e.keynote_speaker, e.description, e.survey_link
-              FROM events e
-              JOIN savedevent s ON e.eventid = s.eventid
-              GROUP BY e.eventid
-              ORDER BY COUNT(s.eventid) DESC
-              LIMIT 1;`
+        `SELECT e.eventid, e.title, COUNT(s.savedid) as savedCount FROM events e JOIN savedevent s ON e.eventid = s.eventid GROUP BY e.eventid ORDER BY savedCount DESC LIMIT 1;`
       );
   
       // Expecting the callback function to be called with the error

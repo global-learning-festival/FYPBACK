@@ -55,7 +55,7 @@ const importantInformation = {
             }
           })
           .catch((error) => {
-            console.error('Error updating important information:', error);
+            //console.error('Error updating important information:', error);
             return callback(error, null);
           });
       },
