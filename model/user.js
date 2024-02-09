@@ -176,6 +176,18 @@ const User = {
 
   });
   },
+  deleteManager: function (roleid, callback) {
+    return query(
+      `DELETE FROM role WHERE roleid=$1`,
+      [roleid]
+    ).then(result=> {
+      return callback(null, result);
+    
+  }).catch(error=>{
+    return callback(error, null);
+
+  });
+  },
 };
 
 module.exports = User;

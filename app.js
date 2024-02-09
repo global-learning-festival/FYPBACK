@@ -507,6 +507,19 @@ app.post("/addadmin", (req, res) => {
   });
 });
 
+app.delete("/deladmin/:id", (req, res) => {
+  var roleid = parseInt(req.params.id);
+
+  User.deleteManager(roleid, (err, result) => {
+    if (err) {
+      console.log(err);
+      res.status(500).send();
+    } else {
+      res.status(201).send(result);
+    }
+  });
+});
+
 app.post("/login", (req, res) => {
   let username = req.body.username;
   let password = req.body.password;
