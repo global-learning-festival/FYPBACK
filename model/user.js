@@ -5,7 +5,7 @@ const { query } = require("../database");
 const User = {
   //Gets all admin/event manager users
   getAdmin: function (callback) {
-    return query(`SELECT username, type FROM role;`)
+    return query(`SELECT roleid, username, type FROM role;`)
     .then(result=> {
       //console.log("Users fetched successfully:", result);
       return callback(null, result);
