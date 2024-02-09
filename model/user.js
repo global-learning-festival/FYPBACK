@@ -134,7 +134,7 @@ const User = {
     )
       .then((result) => {
         // Return the user if found, otherwise return null
-        return callback(null, result.rows);
+        return callback(null, result.rows.length > 0 ? result.rows[0] : null);
       })
       .catch((err) => {
        // console.error("Error retrieving user by UID:", err);
