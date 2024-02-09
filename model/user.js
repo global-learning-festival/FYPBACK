@@ -80,13 +80,15 @@ const User = {
     return query(
       `INSERT INTO users (first_name, last_name, company, linkedinurl, uid, type) VALUES ($1, $2, $3, $4, $5, $6) RETURNING*`,
       [first_name, last_name, company, linkedinurl, uid, type]
-    ).then(result=> {
-      return callback(null, result);
-    
-  }).catch(error=>{
-    return callback(error, null);
-
-  });
+      ).then((result, err) => {
+        if (err) {
+          callback(err, null);
+          console.log(err);
+          return;
+        } else {
+          return callback(null, result);
+        }
+      });
   },
   //Gets all users from admin and regular users for admin frontend
   getUsers: function (callback) {
