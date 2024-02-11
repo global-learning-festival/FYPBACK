@@ -11,6 +11,7 @@ const cors = require("cors");
 const app = express();
 const { hashSync } = require("bcrypt");
 
+const directionsRouter = require('./model/router');
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const linkedinController = require("./controller/linkedinController");
@@ -811,5 +812,7 @@ app.post("/addlinkedinuser", (req, res) => {
     }
   );
 });
+
+app.use('/api', directionsRouter);
 
 module.exports = app;
