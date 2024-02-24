@@ -7,6 +7,7 @@ const events = require("./model/events");
 const importantInformation = require("./model/importantInfo");
 const User = require("./model/user");
 const login = require("./model/login");
+const help =require('./model/help')
 const cors = require("cors");
 const app = express();
 const { hashSync } = require("bcrypt");
@@ -814,5 +815,89 @@ app.post("/addlinkedinuser", (req, res) => {
 });
 
 app.use('/api', directionsRouter);
+
+app.post("/helpinfo", (req, res) => {
+  var title = req.body.title;
+  var subtitle = req.body.subtitle;
+  var description = req.body.description;
+  var image = req.body.publicId;
+
+  help.addhelpinfo(
+    title,
+    subtitle,
+    description,
+    image,
+    (err, result) => {
+      if (err) {
+        console.log(err);
+        res.status(500).send();
+      } else {
+        res.status(201).send(result);
+      }
+    }
+  );
+});
+
+app.get("/helpinfos", (req, res) => {
+  help.gethelpinfo((err, result) => {
+    if (err) {
+      console.log(err);
+      res.status(500).send();
+    } else {
+      console.log(result);
+      res.status(200).send(result.rows);
+    }
+  });
+});
+app.get("/helpinfos/:id", (req, res) => {
+  var helpid = parseInt(req.params.id);
+
+  help.gethelpid(helpid, (err, result) => {
+    if (err) {
+      console.log(err);
+      res.status(500).send();
+    } else {
+      console.log(result);
+      res.status(200).send(result.rows);
+    }
+  });
+});
+
+app.put("/helpinfo/:id", (req, res) => {
+  var helpid = parseInt(req.params.id);
+  var title = req.body.title;
+  var subtitle = req.body.subtitle;
+  var description = req.body.description;
+  var image = req.body.publicId;
+
+  help.updatehelpinfo(
+    helpid,
+    title,
+    subtitle,
+    description,
+    image,
+    (err, result) => {
+      if (err) {
+        console.error(err);
+        res.status(500).send();
+      } else {
+        res.status(200).send(result);
+      }
+    }
+  );
+});
+
+app.delete("/delhelpinfo/:id", (req, res) => {
+  var helpid = parseInt(req.params.id);
+
+  help.deletehelp(helpid, (err, result) => {
+    if (err) {
+      console.log(err);
+      res.status(500).send();
+    } else {
+      res.status(201).send(result);
+    }
+  });
+});
 
 module.exports = app;
